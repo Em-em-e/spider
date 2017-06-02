@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fishroad.dao.NewsMapper" >
+  <resultMap id="BaseResultMap" type="com.fishroad.vo.News" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="news_type" property="newsType" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="cmt_count" property="cmtCount" jdbcType="INTEGER" />
+    <result column="first_time" property="firstTime" jdbcType="TIMESTAMP" />
+    <result column="last_time" property="lastTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, title, news_type, url, cmt_count, first_time, last_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from news
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from news
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.fishroad.vo.News" >
+    insert into news (id, title, news_type, 
+      url, cmt_count, first_time, 
+      last_time)
+    values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{newsType,jdbcType=VARCHAR}, 
+      #{url,jdbcType=VARCHAR}, #{cmtCount,jdbcType=INTEGER}, #{firstTime,jdbcType=TIMESTAMP}, 
+      #{lastTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.fishroad.vo.News" >
+    insert into news
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="newsType != null" >
+        news_type,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+      <if test="cmtCount != null" >
+        cmt_count,
+      </if>
+      <if test="firstTime != null" >
+        first_time,
+      </if>
+      <if test="lastTime != null" >
+        last_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="newsType != null" >
+        #{newsType,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="cmtCount != null" >
+        #{cmtCount,jdbcType=INTEGER},
+      </if>
+      <if test="firstTime != null" >
+        #{firstTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastTime != null" >
+        #{lastTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fishroad.vo.News" >
+    update news
+    <set >
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="newsType != null" >
+        news_type = #{newsType,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="cmtCount != null" >
+        cmt_count = #{cmtCount,jdbcType=INTEGER},
+      </if>
+      <if test="firstTime != null" >
+        first_time = #{firstTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastTime != null" >
+        last_time = #{lastTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fishroad.vo.News" >
+    update news
+    set title = #{title,jdbcType=VARCHAR},
+      news_type = #{newsType,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      cmt_count = #{cmtCount,jdbcType=INTEGER},
+      first_time = #{firstTime,jdbcType=TIMESTAMP},
+      last_time = #{lastTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
