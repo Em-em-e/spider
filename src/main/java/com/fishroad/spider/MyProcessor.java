@@ -1,12 +1,9 @@
 package com.fishroad.spider;
-import java.util.Date;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.alibaba.fastjson.JSONObject;
 import com.fishroad.services.NewsServiceImpl;
-import com.fishroad.vo.News;
 
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
@@ -42,13 +39,9 @@ public class MyProcessor implements PageProcessor {
         	
         	o=JSONObject.parseObject(page.getRawText());
         	
-        	News n=new News();
-        	n.setTitle(o.getString("title"));
-        	n.setFirstTime(new Date());
-        	n.setNewsType(o.getString("boardId"));
-        	n.setUrl(o.getString("url"));
-        	n.setCmtCount(o.getIntValue("cmtAgainst")+o.getIntValue("cmtVote")+o.getIntValue("rcount"));
-        	newsServiceImpl.saveNews(n);
+        	//
+        	page.putField("item", o);
+        	
         	System.out.println("抓取的内容："+
         			"累计："+
         			count

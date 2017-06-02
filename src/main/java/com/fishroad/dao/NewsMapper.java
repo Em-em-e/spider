@@ -1,5 +1,7 @@
 package com.fishroad.dao;
 
+import java.util.List;
+
 import com.fishroad.vo.News;
 
 public interface NewsMapper {
@@ -14,4 +16,6 @@ public interface NewsMapper {
     int updateByPrimaryKeySelective(News record);
 
     int updateByPrimaryKey(News record);
+    
+    List<News> getAll();
 }

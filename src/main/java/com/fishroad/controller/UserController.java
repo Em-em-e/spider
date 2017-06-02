@@ -2,6 +2,7 @@ package com.fishroad.controller;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -13,13 +14,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fishroad.services.IUserService;
 import com.fishroad.services.NewsServiceImpl;
-import com.fishroad.spider.MyProcessor;
 import com.fishroad.vo.News;
 import com.fishroad.vo.User;
-
-import us.codecraft.webmagic.Spider;
 
 
 @Controller
@@ -48,19 +47,17 @@ public class UserController {
 		schedulerFactoryBean.stop();
 		return "showUser";
 	}
-	@RequestMapping("/startJob")
-	public void startJob(HttpServletRequest request,HttpServletResponse response) throws IOException{
-		
-		MyProcessor p=new MyProcessor();
-		
-		long startTime, endTime;
-        System.out.println("开始爬取...");
-        startTime = System.currentTimeMillis();
-        Spider sp=Spider.create(p).addUrl("http://news.163.com/").thread(50);
-        sp.run();
-        endTime = System.currentTimeMillis();
-        System.out.println("爬取结束，耗时约" + ((endTime - startTime) / 1000) + "秒，抓取了"+MyProcessor.getCount()+"条记录");
-		response.getWriter().println("sss");
+	@RequestMapping("/newsList")
+	public String startJob(HttpServletRequest request){
+		System.out.println("aa");
+		return "newsList";
+	}
+	
+	@RequestMapping("/list")
+	public void list(HttpServletRequest request,HttpServletResponse response) throws IOException{
+		List<News> li=newsServiceImpl.getAll();
+		Object re=JSONObject.toJSON(li);
+		response.getWriter().print(re.toString());
 	}
 
 }

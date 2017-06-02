@@ -1,5 +1,7 @@
 package com.fishroad.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,5 +16,9 @@ public class NewsServiceImpl {
 	
 	public void saveNews(News news){
 		newsMapper.insert(news);
+	}
+
+	public List<News> getAll() {
+		return newsMapper.getAll();
 	}
 }
