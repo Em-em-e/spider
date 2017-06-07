@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.alibaba.fastjson.JSONObject;
@@ -31,9 +32,11 @@ public class UserController {
 	@Autowired
 	private SysParamMapper sysParamMapper;
 	
-	@RequestMapping("/newsList")
-	public String startJob(HttpServletRequest request){
-		return "../../index";
+	@RequestMapping("/index.html")
+	public String startJob(HttpServletRequest request,Model model){
+		SysParam sp=sysParamMapper.selectByPrimaryKey(1);
+		model.addAttribute("incomeRate", sp.getParamValue());
+		return "index";
 	}
 	
 	@RequestMapping("list.json")
@@ -113,10 +116,28 @@ public class UserController {
 	}
 	
 	@RequestMapping("/getRate")
-	public void save(HttpServletRequest request,HttpServletResponse response) throws IOException {
+	public void getRate(HttpServletRequest request,HttpServletResponse response) throws IOException {
 		SysParam sp=sysParamMapper.selectByPrimaryKey(1);
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().print(sp.getParamValue());
+	}
+	@RequestMapping("/updateRate")
+	public void updateRate(HttpServletRequest request,HttpServletResponse response,String incomeRate) throws IOException{
+		response.setCharacterEncoding("UTF-8");
+		if(incomeRate!=null && incomeRate!=""){
+			try {
+				Float.parseFloat(incomeRate);
+			} catch (Exception e) {
+				response.getWriter().print("请输入合法的数字");
+				return;
+			}
+			SysParam s=new SysParam();
+			s.setId(1);s.setParamName("rate");s.setParamValue(incomeRate);
+			sysParamMapper.updateByPrimaryKeySelective(s);
+			response.getWriter().print("修改成功！");
+		}else{
+			response.getWriter().print("请输入一个有效的数字！");
+		}
 	}
 
 }

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fishroad.dao.AccountMapper" >
+  <resultMap id="BaseResultMap" type="com.fishroad.vo.Account" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="platform" property="platform" jdbcType="VARCHAR" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="email_password" property="emailPassword" jdbcType="VARCHAR" />
+    <result column="allot_user" property="allotUser" jdbcType="INTEGER" />
+    <result column="login_cookie" property="loginCookie" jdbcType="VARCHAR" />
+    <result column="last_login_time" property="lastLoginTime" jdbcType="TIMESTAMP" />
+    <result column="remark1" property="remark1" jdbcType="VARCHAR" />
+    <result column="remark2" property="remark2" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, platform, username, password, email_password, allot_user, login_cookie, last_login_time, 
+    remark1, remark2
+  </sql>
+  <insert id="insertList" useGeneratedKeys="true" parameterType="java.util.List">  
+	    <selectKey resultType="int" keyProperty="id" order="AFTER">  
+	        SELECT  
+	        LAST_INSERT_ID()  
+	    </selectKey>  
+	    insert into account (platform,username,password,email_password,allot_user,
+	    login_cookie,last_login_time,remark1,remark2)   
+	    values  
+	    <foreach collection="list" item="item" index="index" separator="," >  
+	        (#{item.platform},#{item.username},#{item.password},#{item.emailPassword},#{item.allotUser}
+	        ,#{item.loginCookie},#{item.lastLoginTime},#{item.remark1},#{item.remark2})  
+	    </foreach>  
+	</insert> 
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from account
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from account
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.fishroad.vo.Account" >
+    insert into account (id, platform, username, 
+      password, email_password, allot_user, 
+      login_cookie, last_login_time, remark1, 
+      remark2)
+    values (#{id,jdbcType=INTEGER}, #{platform,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{emailPassword,jdbcType=VARCHAR}, #{allotUser,jdbcType=INTEGER}, 
+      #{loginCookie,jdbcType=VARCHAR}, #{lastLoginTime,jdbcType=TIMESTAMP}, #{remark1,jdbcType=VARCHAR}, 
+      #{remark2,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.fishroad.vo.Account" >
+    insert into account
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="platform != null" >
+        platform,
+      </if>
+      <if test="username != null" >
+        username,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="emailPassword != null" >
+        email_password,
+      </if>
+      <if test="allotUser != null" >
+        allot_user,
+      </if>
+      <if test="loginCookie != null" >
+        login_cookie,
+      </if>
+      <if test="lastLoginTime != null" >
+        last_login_time,
+      </if>
+      <if test="remark1 != null" >
+        remark1,
+      </if>
+      <if test="remark2 != null" >
+        remark2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="platform != null" >
+        #{platform,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="emailPassword != null" >
+        #{emailPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="allotUser != null" >
+        #{allotUser,jdbcType=INTEGER},
+      </if>
+      <if test="loginCookie != null" >
+        #{loginCookie,jdbcType=VARCHAR},
+      </if>
+      <if test="lastLoginTime != null" >
+        #{lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark1 != null" >
+        #{remark1,jdbcType=VARCHAR},
+      </if>
+      <if test="remark2 != null" >
+        #{remark2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fishroad.vo.Account" >
+    update account
+    <set >
+      <if test="platform != null" >
+        platform = #{platform,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="emailPassword != null" >
+        email_password = #{emailPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="allotUser != null" >
+        allot_user = #{allotUser,jdbcType=INTEGER},
+      </if>
+      <if test="loginCookie != null" >
+        login_cookie = #{loginCookie,jdbcType=VARCHAR},
+      </if>
+      <if test="lastLoginTime != null" >
+        last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark1 != null" >
+        remark1 = #{remark1,jdbcType=VARCHAR},
+      </if>
+      <if test="remark2 != null" >
+        remark2 = #{remark2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fishroad.vo.Account" >
+    update account
+    set platform = #{platform,jdbcType=VARCHAR},
+      username = #{username,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      email_password = #{emailPassword,jdbcType=VARCHAR},
+      allot_user = #{allotUser,jdbcType=INTEGER},
+      login_cookie = #{loginCookie,jdbcType=VARCHAR},
+      last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+      remark1 = #{remark1,jdbcType=VARCHAR},
+      remark2 = #{remark2,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -18,3 +18,18 @@ create table sys_param(
 
 INSERT INTO sys_param VALUES(1,'rate','0.3');
 
+use test;
+create table account(
+	id int not null auto_increment,
+    platform varchar(10),
+    username varchar(100),
+    password varchar(30),
+    email_password varchar(30),
+    allot_user int,
+    login_cookie varchar(2000),
+    last_login_time datetime(6),
+    remark1 varchar(100),
+    remark2 varchar(100),
+    primary key (id)
+)engine=innodb default charset=utf8;
+

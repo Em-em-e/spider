@@ -1,7 +1,7 @@
 
 
 	//获取倍数
-	$.get("http://localhost:8080/spider/getRate",function(data){
+	$.get("http://123.206.231.254/spider/getRate",function(data){
 		var rate=parseFloat(data);
 		
 		//头条
@@ -14,7 +14,7 @@
 			var a2=$(".index-top-statistics-number:eq(0)");
 			console.log(a2);
 			if(!isNaN(parseFloat(a2.text())))
-				a2.text(a2.text()*rate);
+				a2.text(fmoney(a2.text()*rate,2));
 		}, 1000);
 		
 		var income1=$(".num.money:eq(0)");
@@ -26,16 +26,29 @@
 			
 		//收入广场 昨日收益
 		if(!isNaN(parseFloat(income1.text())))
-			income1.text(parseFloat(income1.text())*rate);
+			income1.text(fmoney(""+parseFloat(income1.text())*rate,2));
 		//收入广场 7日收益
 		if(!isNaN(parseFloat(income2.text())))
-			income2.text(parseFloat(income2.text())*rate);
+			income2.text(fmoney(""+parseFloat((income2.text())*rate),2));
 		//收入广场 30日收益
 		if(!isNaN(parseFloat(income3.text())))
-			income3.text(parseFloat(income3.text())*rate);
+			income3.text(fmoney(""+parseFloat(income3.text())*rate,2));
 		
 	},"json");
 	
+	function fmoney(s, n)   
+	{   
+	   n = n > 0 && n <= 20 ? n : 2;   
+	   s = parseFloat((s + "").replace(/[^\d\.-]/g, "")).toFixed(n) + "";   
+	   var l = s.split(".")[0].split("").reverse(),   
+	   r = s.split(".")[1];   
+	   t = "";   
+	   for(i = 0; i < l.length; i ++ )   
+	   {   
+	      t += l[i] + ((i + 1) % 3 == 0 && (i + 1) != l.length ? "," : "");   
+	   }   
+	   return t.split("").reverse().join("") + "." + r;   
+	} 
 	
 	
 	
