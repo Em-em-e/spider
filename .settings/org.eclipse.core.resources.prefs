@@ -1,3 +1,9 @@
 eclipse.preferences.version=1
 encoding//WebContent/WEB-INF/jsp/newsList.jsp=UTF-8
+<<<<<<< HEAD
+encoding//WebContent/index.jsp=UTF-8
+encoding//src/main/java/com/fishroad/controller/UserController.java=UTF-8
+=======
+>>>>>>> branch 'master' of http://54.222.133.82/frank.li/test01.git
 encoding//src/main/resources/db.properties=UTF-8
+encoding/<project>=UTF-8

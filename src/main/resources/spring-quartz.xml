@@ -27,7 +27,7 @@
 	<bean id= "testTaskTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean" >  
 	       <property name="jobDetail" ref="testTaskMethod" />   
 	      <!-- 每一分钟执行一次 -->   
-	      <property name="cronExpression" value="0/5 * * * * ?" />   
+	      <property name="cronExpression" value="0 0 1 * * ?" />   
 	</bean>  
 	  
 	<!-- 配置调度工厂 -->  

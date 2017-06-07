@@ -1,120 +1,155 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.fishroad.dao.NewsMapper" >
-  <resultMap id="BaseResultMap" type="com.fishroad.vo.News" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="title" property="title" jdbcType="VARCHAR" />
-    <result column="news_type" property="newsType" jdbcType="VARCHAR" />
-    <result column="url" property="url" jdbcType="VARCHAR" />
-    <result column="cmt_count" property="cmtCount" jdbcType="INTEGER" />
-    <result column="first_time" property="firstTime" jdbcType="TIMESTAMP" />
-    <result column="last_time" property="lastTime" jdbcType="TIMESTAMP" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fishroad.dao.NewsMapper">
+  <resultMap id="BaseResultMap" type="com.fishroad.vo.News">
+    <id column="url" jdbcType="VARCHAR" property="url" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="news_type" jdbcType="VARCHAR" property="news_type" />
+    <result column="cmt_count" jdbcType="INTEGER" property="cmt_count" />
+    <result column="create_time" jdbcType="VARCHAR" property="create_time" />
+    <result column="modify_time" jdbcType="VARCHAR" property="modify_time" />
+    <result column="last_update_time" jdbcType="TIMESTAMP" property="last_update_time" />
   </resultMap>
-  <sql id="Base_Column_List" >
-    id, title, news_type, url, cmt_count, first_time, last_time
+  <sql id="Base_Column_List">
+    url, title, news_type, cmt_count, create_time, modify_time, last_update_time
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="queryPage" resultMap="BaseResultMap">  
+        select * from news   
+        <where>  
+        	1=1
+            <if test="news.title != null">  
+                and title LIKE CONCAT('%', CONCAT(#{news.title}, '%'))
+            </if> 
+            <if test="news.news_type != null">  
+                and news_type LIKE CONCAT('%', CONCAT(#{news.news_type}, '%'))
+            </if>  
+			<if test="news.create_time != null">  
+                and create_time LIKE CONCAT('%', CONCAT(#{news.create_time}, '%'))
+            </if>
+        </where>
+        <if test="sort != null">
+        	order by ${sort} ${order}
+      	</if>
+        limit #{offset},#{limit} 
+    </select> 
+    
+    <select id="count" resultType="java.lang.Integer">
+    	select count(*) from news
+    	<where>  
+        	1=1
+            <if test="news.title != null">  
+                and title LIKE CONCAT('%', CONCAT(#{news.title}, '%'))
+            </if> 
+            <if test="news.news_type != null">  
+                and news_type LIKE CONCAT('%', CONCAT(#{news.news_type}, '%'))
+            </if>  
+			<if test="news.create_time != null">  
+                and create_time LIKE CONCAT('%', CONCAT(#{news.create_time}, '%'))
+            </if>
+        </where>
+    </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from news
-    where id = #{id,jdbcType=INTEGER}
+    where url = #{url,jdbcType=VARCHAR}
   </select>
-  <select id="getAll" resultMap="BaseResultMap">
+   <select id="getAll" resultMap="BaseResultMap">
   	select * from news
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from news
-    where id = #{id,jdbcType=INTEGER}
+    where url = #{url,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.fishroad.vo.News" >
-    insert into news (id, title, news_type, 
-      url, cmt_count, first_time, 
-      last_time)
-    values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{newsType,jdbcType=VARCHAR}, 
-      #{url,jdbcType=VARCHAR}, #{cmtCount,jdbcType=INTEGER}, #{firstTime,jdbcType=TIMESTAMP}, 
-      #{lastTime,jdbcType=TIMESTAMP})
+  <insert id="insert" parameterType="com.fishroad.vo.News">
+    insert into news (url, title, news_type, 
+      cmt_count, create_time, modify_time, 
+      last_update_time)
+    values (#{url,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{news_type,jdbcType=VARCHAR}, 
+      #{cmt_count,jdbcType=INTEGER}, #{create_time,jdbcType=VARCHAR}, #{modify_time,jdbcType=VARCHAR}, 
+      #{last_update_time,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.fishroad.vo.News" >
+  <insert id="insertSelective" parameterType="com.fishroad.vo.News">
     insert into news
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="title != null" >
-        title,
-      </if>
-      <if test="newsType != null" >
-        news_type,
-      </if>
-      <if test="url != null" >
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="url != null">
         url,
       </if>
-      <if test="cmtCount != null" >
+      <if test="title != null">
+        title,
+      </if>
+      <if test="news_type != null">
+        news_type,
+      </if>
+      <if test="cmt_count != null">
         cmt_count,
       </if>
-      <if test="firstTime != null" >
-        first_time,
+      <if test="create_time != null">
+        create_time,
       </if>
-      <if test="lastTime != null" >
-        last_time,
+      <if test="modify_time != null">
+        modify_time,
+      </if>
+      <if test="last_update_time != null">
+        last_update_time,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="title != null" >
-        #{title,jdbcType=VARCHAR},
-      </if>
-      <if test="newsType != null" >
-        #{newsType,jdbcType=VARCHAR},
-      </if>
-      <if test="url != null" >
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="url != null">
         #{url,jdbcType=VARCHAR},
       </if>
-      <if test="cmtCount != null" >
-        #{cmtCount,jdbcType=INTEGER},
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
       </if>
-      <if test="firstTime != null" >
-        #{firstTime,jdbcType=TIMESTAMP},
+      <if test="news_type != null">
+        #{news_type,jdbcType=VARCHAR},
       </if>
-      <if test="lastTime != null" >
-        #{lastTime,jdbcType=TIMESTAMP},
+      <if test="cmt_count != null">
+        #{cmt_count,jdbcType=INTEGER},
+      </if>
+      <if test="create_time != null">
+        #{create_time,jdbcType=VARCHAR},
+      </if>
+      <if test="modify_time != null">
+        #{modify_time,jdbcType=VARCHAR},
+      </if>
+      <if test="last_update_time != null">
+        #{last_update_time,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.fishroad.vo.News" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.fishroad.vo.News">
     update news
-    <set >
-      <if test="title != null" >
+    <set>
+      <if test="title != null">
         title = #{title,jdbcType=VARCHAR},
       </if>
-      <if test="newsType != null" >
-        news_type = #{newsType,jdbcType=VARCHAR},
+      <if test="news_type != null">
+        news_type = #{news_type,jdbcType=VARCHAR},
       </if>
-      <if test="url != null" >
-        url = #{url,jdbcType=VARCHAR},
+      <if test="cmt_count != null">
+        cmt_count = #{cmt_count,jdbcType=INTEGER},
       </if>
-      <if test="cmtCount != null" >
-        cmt_count = #{cmtCount,jdbcType=INTEGER},
+      <if test="create_time != null">
+        create_time = #{create_time,jdbcType=VARCHAR},
       </if>
-      <if test="firstTime != null" >
-        first_time = #{firstTime,jdbcType=TIMESTAMP},
+      <if test="modify_time != null">
+        modify_time = #{modify_time,jdbcType=VARCHAR},
       </if>
-      <if test="lastTime != null" >
-        last_time = #{lastTime,jdbcType=TIMESTAMP},
+      <if test="last_update_time != null">
+        last_update_time = #{last_update_time,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where url = #{url,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.fishroad.vo.News" >
+  <update id="updateByPrimaryKey" parameterType="com.fishroad.vo.News">
     update news
     set title = #{title,jdbcType=VARCHAR},
-      news_type = #{newsType,jdbcType=VARCHAR},
-      url = #{url,jdbcType=VARCHAR},
-      cmt_count = #{cmtCount,jdbcType=INTEGER},
-      first_time = #{firstTime,jdbcType=TIMESTAMP},
-      last_time = #{lastTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
+      news_type = #{news_type,jdbcType=VARCHAR},
+      cmt_count = #{cmt_count,jdbcType=INTEGER},
+      create_time = #{create_time,jdbcType=VARCHAR},
+      modify_time = #{modify_time,jdbcType=VARCHAR},
+      last_update_time = #{last_update_time,jdbcType=TIMESTAMP}
+    where url = #{url,jdbcType=VARCHAR}
   </update>
 </mapper>

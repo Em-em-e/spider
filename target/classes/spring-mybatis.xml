@@ -58,6 +58,6 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 	
-	<import resource="classpath*:spring-quartz.xml" />
+	<!-- <import resource="classpath*:spring-quartz.xml" /> -->
 
 </beans>
