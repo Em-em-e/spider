@@ -1,0 +1,23 @@
+{
+  "manifest_version": 2,
+  "version": "1.0.1",
+  "name": "百度百家登录助手",
+  "description": "百度百家登录助手",
+  "browser_action": {
+
+  },
+  "permissions": [
+    "https://mp.toutiao.com/profile_v2/income-overview/*"
+  ],
+  "background": {
+
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://mp.toutiao.com/profile_v2/income-overview/*"],
+      "js": ["jquery-1.10.2.js","baidu_login.js"],
+      "run_at": "document_end",
+      "all_frames": true
+    }
+  ]
+}
