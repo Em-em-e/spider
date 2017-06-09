@@ -32,7 +32,7 @@ public class UserController {
 	@Autowired
 	private SysParamMapper sysParamMapper;
 	
-	@RequestMapping("/index.html")
+	@RequestMapping("/index")
 	public String startJob(HttpServletRequest request,Model model){
 		SysParam sp=sysParamMapper.selectByPrimaryKey(1);
 		model.addAttribute("incomeRate", sp.getParamValue());

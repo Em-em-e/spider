@@ -33,3 +33,15 @@ create table account(
     primary key (id)
 )engine=innodb default charset=utf8;
 
+create table sys_user(
+	id int not null auto_increment,
+    username varchar(100),
+    password varchar(100),
+    name varchar(30),
+    usertype varchar(10),
+    report_to int,
+    last_login_time datetime(6),
+    remark1 varchar(100),
+    primary key (id)
+)engine=innodb default charset=utf8;
+
