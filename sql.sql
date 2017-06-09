@@ -27,7 +27,7 @@ create table account(
     email_password varchar(30),
     allot_user int,
     login_cookie varchar(2000),
-    last_login_time datetime(6),
+    last_login_time datetime,
     remark1 varchar(100),
     remark2 varchar(100),
     primary key (id)
@@ -40,7 +40,7 @@ create table sys_user(
     name varchar(30),
     usertype varchar(10),
     report_to int,
-    last_login_time datetime(6),
+    last_login_time datetime,
     remark1 varchar(100),
     primary key (id)
 )engine=innodb default charset=utf8;
