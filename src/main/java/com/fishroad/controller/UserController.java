@@ -44,6 +44,12 @@ public class UserController {
 			String sort,String order) throws IOException{
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
+		
+		if(news!=null && news.getTitle()!=null && !"".equals(news.getTitle())){
+			byte[] ti=news.getTitle().getBytes("ISO8859-1");
+			String title=new String(ti, "UTF-8");
+			news.setTitle(title);
+		}
 		List<News> li=newsServiceImpl.queryPage(offset, limit,sort,order, news);
 		
 		int total=newsServiceImpl.count(news);

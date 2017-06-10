@@ -22,8 +22,20 @@ public class Account {
     private String remark1;
 
     private String remark2;
+    
+    private String allotUserQuery;
+    
+    private int count;
 
-    public Integer getId() {
+    public String getAllotUserQuery() {
+		return allotUserQuery;
+	}
+
+	public void setAllotUserQuery(String allotUserQuery) {
+		this.allotUserQuery = allotUserQuery;
+	}
+
+	public Integer getId() {
         return id;
     }
 

@@ -33,7 +33,7 @@ public class NewsServiceImpl {
 	
 	public List<News> queryPage(int offset,int limit,String sort, String order, News news){
 		
-		return newsMapper.queryPage(limit, offset*limit, sort,order,news);
+		return newsMapper.queryPage(limit, offset, sort,order,news);
 	}
 	
 	public int count(News news){

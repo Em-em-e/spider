@@ -12,11 +12,60 @@
     <result column="last_login_time" property="lastLoginTime" jdbcType="TIMESTAMP" />
     <result column="remark1" property="remark1" jdbcType="VARCHAR" />
     <result column="remark2" property="remark2" jdbcType="VARCHAR" />
+    <result column="allot_user_query" property="allotUserQuery" jdbcType="VARCHAR"/>
   </resultMap>
   <sql id="Base_Column_List" >
     id, platform, username, password, email_password, allot_user, login_cookie, last_login_time, 
     remark1, remark2
   </sql>
+  
+  <select id="queryPage" resultMap="BaseResultMap">  
+        select a.platform,a.username,a.password,a.email_password,CONCAT(u.username, CONCAT(',',u.name)) allot_user_query,
+        	a.last_login_time  
+        from account a LEFT JOIN sys_user u on a.allot_user=u.id   
+        <where>  
+        	1=1
+            <if test="ac.platform != null">  
+                and a.platform LIKE CONCAT('%', CONCAT(#{ac.platform}, '%'))
+            </if> 
+            <if test="ac.username != null">  
+                and a.username LIKE CONCAT('%', CONCAT(#{ac.username}, '%'))
+            </if>  
+			<if test="ac.allotUserQuery != null and ac.allotUserQuery!=''">  
+                and (u.name LIKE CONCAT('%', CONCAT(#{ac.allotUserQuery}, '%')) or u.username LIKE CONCAT('%', CONCAT(#{ac.allotUserQuery}, '%')) )
+            </if>
+            <if test="ac.lastLoginTime != null">  
+                and last_login_time LIKE CONCAT('%', CONCAT(#{ac.lastLoginTime}, '%'))
+            </if>
+        </where>
+        <if test="sort != null">
+        	order by ${sort} ${order}
+      	</if>
+        limit #{offset},#{limit} 
+    </select> 
+    
+    <select id="count" resultType="java.lang.Integer">
+    	select count(*) from account a LEFT JOIN sys_user u on a.allot_user=u.id   
+        <where>  
+        	1=1
+            <if test="ac.platform != null">  
+                and a.platform LIKE CONCAT('%', CONCAT(#{ac.platform}, '%'))
+            </if> 
+            <if test="ac.username != null">  
+                and a.username LIKE CONCAT('%', CONCAT(#{ac.username}, '%'))
+            </if>  
+			<if test="ac.allotUser != null">  
+                and (u.name LIKE CONCAT('%', CONCAT(#{ac.allotUser}, '%')) or u.username LIKE CONCAT('%', CONCAT(#{ac.allotUser}, '%')) )
+            </if>
+            <if test="ac.lastLoginTime != null">  
+                and last_login_time LIKE CONCAT('%', CONCAT(#{ac.lastLoginTime}, '%'))
+            </if>
+        </where>
+    </select>
+  
+  
+  
+  
   <insert id="insertList" useGeneratedKeys="true" parameterType="java.util.List">  
 	    <selectKey resultType="int" keyProperty="id" order="AFTER">  
 	        SELECT  

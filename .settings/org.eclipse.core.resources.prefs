@@ -3,7 +3,6 @@
 >>>>>>>=branch 'master' of http\://54.222.133.82/frank.li/test01.git
 eclipse.preferences.version=1
 encoding//WebContent/WEB-INF/jsp/index.jsp=UTF-8
-encoding//WebContent/WEB-INF/jsp/newsList.jsp=UTF-8
 encoding//WebContent/login.jsp=UTF-8
 encoding//src/main/java/com/fishroad/controller/UserController.java=UTF-8
 encoding//src/main/resources/db.properties=UTF-8

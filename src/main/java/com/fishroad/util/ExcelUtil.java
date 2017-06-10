@@ -125,7 +125,7 @@ public class ExcelUtil {
                 }
                 if (isHasValues(vo)) {//判断对象属性是否有值
                     list.add(vo);
-                    vo.getClass().getConstructor(new Class[]{}).newInstance(new Object[]{});//重新创建一个vo对象
+                    vo=vo.getClass().getConstructor(new Class[]{}).newInstance(new Object[]{});//重新创建一个vo对象
                 }
                 
             }
