@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
 <!doctype html>
 <html lang="ch">
     <head>
@@ -33,10 +34,10 @@
                     <p id="logoP"><img id="logo" alt="网易新闻数据爬虫系统" src="${pageContext.request.contextPath}/images/logo.png"><span>账号管理系统</span></p>
                 </div>
                 <div id="personInfor">
-                    <p id="userName">李亮</p>
-                    <p><span>endtcy_ll@163.com</span> <a href="http://endtcy.github.io/" target="_blank"> GitHub</a></p>
+                    <p id="userName">你好：${sessionScope.loginedUser.name}</p>
+                    <p>上次登录时间：<span><fmt:formatDate value="${sessionScope.loginedUser.lastLoginTime}" pattern="MM月dd日  HH:mm"/></span></p>
                     <p>
-                        <a>退出登录</a>
+                        <a href="loginout">退出登录</a>
                     </p>
                 </div>
                 <div class="meun-title">数据管理</div>

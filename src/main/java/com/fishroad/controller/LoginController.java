@@ -1,5 +1,8 @@
 package com.fishroad.controller;
 
+import java.io.IOException;
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -32,13 +35,24 @@ public class LoginController {
 			request.getRequestDispatcher("login.jsp").forward(request, response);
 		}else{
 			if(user.getPassword().equals(sysUser.getPassword())){
-				request.getSession().setAttribute("loginedUser", user);
+				SysUser u=new SysUser();
+				u.setLastLoginTime(user.getLastLoginTime());
+				u.setName(user.getName());
+				u.setUsername(user.getUsername());
+				request.getSession().setAttribute("loginedUser", u);
+				user.setLastLoginTime(new Date());
+				sysUserMapper.updateByPrimaryKeySelective(user);
 				response.sendRedirect("index");
 			}else{
 				request.setAttribute("errMsg", "密码错误");
 				request.getRequestDispatcher("login.jsp").forward(request, response);
 			}
 		}
-		
+	}
+	
+	@RequestMapping("/loginout")
+	public void loginOut(HttpServletRequest request,HttpServletResponse response) throws IOException{
+		request.getSession().removeAttribute("loginedUser");
+		response.sendRedirect("login.jsp");
 	}
 }

@@ -22,32 +22,40 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fishroad.util.RSAUtil;
 
 public class BaiDu {
-    public static void main(String[] args) {
-        new BaiDu().vmain();
+	public static void main(String[] args) {
+        new BaiDu().doLogin("18321830773", "ll920521609219", null);
+        
     }
 
-    HttpClient client;
+	HttpClient client;
     Map<String, String> context = new HashMap<String, String>() {
-        @Override
+
+		@Override
 		public String put(String key, String value) {
             System.out.println(key + ":" + value);
             return super.put(key, value);
         };
     };
-    CookieStore cookieStore;
+    public CookieStore cookieStore;
     HttpGet get;
     HttpPost post;
 
     HttpResponse res;
+    
+    public String errorMsg;
+    
+    public String respString;
 
     public BaiDu() {
         try {
@@ -62,14 +70,24 @@ public class BaiDu {
             get.setURI(new URI("http://pan.baidu.com/"));
             client.execute(get);
             getToken();
-            context.put("username", "18321830773");
-            context.put("pass", "ll920521609219");
-            Encrypt();
-            login();
         } catch (Exception e) {
-            System.out.println("init fail!");
+            this.errorMsg="初始化失败！";
             e.printStackTrace();
         }
+    }
+    
+    public String doLogin(String username,String password,Cookie cookie){
+//    	cookieStore.addCookie(cookie);
+    	context.put("username", username);
+        context.put("pass", password);
+        try {
+			Encrypt();
+			login();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "登录失败";
+		}
+        return errorMsg;
     }
 
     /**
@@ -97,9 +115,9 @@ public class BaiDu {
         }
     }
 
-    private void errorhandle() throws Exception {
+	private void errorhandle() throws Exception {
         if (context.get("error") == null) {
-            System.out.println("登陆成功");
+            errorMsg="登录成功";
             return;
         }
         switch (Integer.valueOf(context.get("error"))) {
@@ -107,7 +125,7 @@ public class BaiDu {
             get.setURI(new URI("https://passport.baidu.com/cgi-bin/genimage?"
                     + context.get("codeString")));
             res = client.execute(get);
-            File file = new File("C:/Users/fll64049/Desktop/baidu/" + context.get("username") + ".gif");
+            File file = new File("C:/Users/Administrator/Desktop/baidu/" + context.get("username") + ".gif");
             FileUtils.touch(file);
             OutputStream os = new FileOutputStream(file);
             res.getEntity().writeTo(os);
@@ -115,7 +133,7 @@ public class BaiDu {
             volidate();
             break;
         case 0:
-            System.out.println("登陆成功");
+        	errorMsg="登录成功";
             break;
         default:
             break;
@@ -151,7 +169,7 @@ public class BaiDu {
             }
         };
         params.add(new BasicNameValuePair("staticpage",
-                "http://www.baidu.com/cache/user/html/jump.html"));
+                "http://i.baidu.com/"));
         params.add(new BasicNameValuePair("charset", "utf-8"));
         params.add(new BasicNameValuePair("apiver", "v3"));
         params.add(new BasicNameValuePair("token", context.get("token")));
@@ -175,7 +193,7 @@ public class BaiDu {
         params.add(new BasicNameValuePair("verifycode", context
                 .get("verifycode")));
         params.add(new BasicNameValuePair("codestring", context
-                .get("codestring")));
+                .get("codeString")));
         params.add(new BasicNameValuePair("mem_pass", "on"));
         params.add(new BasicNameValuePair("callback",
                 "parent.bdPass.api.login._postCallback"));
@@ -199,12 +217,10 @@ public class BaiDu {
         if (codem.find()) {
             context.put("codeString", codem.group(1));
         }
-        System.out.println(string);
+        respString=string;
         errorhandle();
     }
 
-    public void vmain() {
-    }
 
     private void volidate() throws Exception {
         System.out.println("请输入验证码:");
@@ -220,7 +236,7 @@ public class BaiDu {
         if (m.find()) {
             switch (Integer.valueOf(m.group(1))) {
             case 500002:
-                System.out.println("验证码错误");
+            	this.errorMsg="验证码错误";
                 break;
             case 0:
                 System.out.println("验证成功");

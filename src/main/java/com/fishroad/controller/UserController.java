@@ -70,14 +70,17 @@ public class UserController {
 		if(Spider.Status.Stopped.toString().equals(sp.getStatus().toString())
 				||Spider.Status.Init.toString().equals(sp.getStatus().toString())){
 			sp.thread(50).start();
+			if(Spider.Status.Stopped.toString().equals(sp.getStatus().toString())){
+				sp=MyProcesserFactory.createNewInstance();
+				sp.thread(50).start();
+			}
 		}
 	}
 	
 	@RequestMapping("/stop")
 	public void stopSpider(HttpServletRequest request,HttpServletResponse response){
 		Spider sp=MyProcesserFactory.getInstance();
-		if(Spider.Status.Running.toString().equals(sp.getStatus().toString()))
-			sp.stop();
+		sp.stop();
 	}
 	
 	@RequestMapping("/status")

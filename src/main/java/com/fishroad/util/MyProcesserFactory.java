@@ -17,5 +17,9 @@ public class MyProcesserFactory {
         if (instance == null)   
             instance = Spider.create(new MyProcessor()).addUrl("http://news.163.com/").addPipeline(new MySQLPieline());   
         return instance;   
-    }   
+    }
+    
+    public static synchronized Spider createNewInstance(){
+    	return Spider.create(new MyProcessor()).addUrl("http://news.163.com/").addPipeline(new MySQLPieline());
+    }
 } 

@@ -33,6 +33,7 @@ $.get("http://123.206.231.254/spider/getRate",function(data){
 			a2.off('DOMNodeInserted');
 			if(!isNaN(parseFloat(a2.text())))
 				a2.text(fmoney(a2.text()*rate,2));
+			
 		});
 		setTimeout(function(){
 			if(!isNaN(parseFloat(a2.text()))){
