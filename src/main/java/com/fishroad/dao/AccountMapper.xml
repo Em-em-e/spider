@@ -18,7 +18,9 @@
     id, platform, username, password, email_password, allot_user, login_cookie, last_login_time, 
     remark1, remark2
   </sql>
-  
+  <select id="findByUsername" resultMap="BaseResultMap">
+  	select * from account where username=#{username}
+  </select>
   <select id="queryPage" resultMap="BaseResultMap">  
         select a.platform,a.username,a.password,a.email_password,CONCAT(u.username, CONCAT(',',u.name)) allot_user_query,
         	a.last_login_time  
@@ -62,10 +64,6 @@
             </if>
         </where>
     </select>
-  
-  
-  
-  
   <insert id="insertList" useGeneratedKeys="true" parameterType="java.util.List">  
 	    <selectKey resultType="int" keyProperty="id" order="AFTER">  
 	        SELECT  

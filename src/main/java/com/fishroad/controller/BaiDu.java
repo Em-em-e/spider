@@ -22,25 +22,17 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import com.alibaba.fastjson.JSONObject;
 import com.fishroad.util.RSAUtil;
 
 public class BaiDu {
-	public static void main(String[] args) {
-        new BaiDu().doLogin("18321830773", "ll920521609219", null);
-        
-    }
-
 	HttpClient client;
     Map<String, String> context = new HashMap<String, String>() {
-
 		@Override
 		public String put(String key, String value) {
             System.out.println(key + ":" + value);
@@ -50,11 +42,8 @@ public class BaiDu {
     public CookieStore cookieStore;
     HttpGet get;
     HttpPost post;
-
     HttpResponse res;
-    
     public String errorMsg;
-    
     public String respString;
 
     public BaiDu() {
@@ -76,8 +65,7 @@ public class BaiDu {
         }
     }
     
-    public String doLogin(String username,String password,Cookie cookie){
-//    	cookieStore.addCookie(cookie);
+    public String doLogin(String username,String password){
     	context.put("username", username);
         context.put("pass", password);
         try {
@@ -85,7 +73,7 @@ public class BaiDu {
 			login();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "登录失败";
+			return errorMsg="登录失败";
 		}
         return errorMsg;
     }
@@ -169,7 +157,7 @@ public class BaiDu {
             }
         };
         params.add(new BasicNameValuePair("staticpage",
-                "http://i.baidu.com/"));
+                "https://tieba.baidu.com/index.html"));
         params.add(new BasicNameValuePair("charset", "utf-8"));
         params.add(new BasicNameValuePair("apiver", "v3"));
         params.add(new BasicNameValuePair("token", context.get("token")));

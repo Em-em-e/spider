@@ -61,6 +61,16 @@ $(document).ready(function() {
 						                {title: '密码',field: 'password',align: 'left',sortable:'true'},
 						                {title: '邮箱密码',field: 'emailPassword',align: 'center',sortable:'true'},
 						                {title: '分配用户',field: 'allotUserQuery',align: 'left',sortable:'true'},
+						                {title: 'Cookie',field: 'isActive',align: 'left',sortable:'true'},
+						                {title: '操作',field: 'operation',align: 'left',
+						                	formatter:function(value,row,index){
+						                		console.log(row.username);
+						                		var str="";
+						                		str="<a href='http://ir.baidu.com/phoenix.zhtml?c=188488&p=irol-irhome&username="
+						                			+row.username+"' target='_blank'>一键登录</a>&nbsp;&nbsp;&nbsp;";
+						                		str+="<a href='auto/login?username="+row.username+"'>获取cookie</a>";
+						                		return str;
+						                	},sortable:'true'},
 						                {title: '最后登录时间',field: 'lastLoginTime',align: 'left',
 						                  formatter:function(value,row,index){
 						                	  if(value){

@@ -10,19 +10,25 @@
     "https://mp.toutiao.com/profile_v2/income-overview/*",
     "http://baijiahao.baidu.com/*",
     "http://localhost:8080/*",
-    "http://123.206.231.254/spider/*"
+    "http://123.206.231.254/spider/*",
+    "http://ir.baidu.com/*"
   ],
   "background": {
 
   },
   "content_scripts": [
     {
-      "matches": ["https://mp.toutiao.com/profile_v2/income-overview/*",
-      		"http://baijiahao.baidu.com/*","http://localhost:8080/*",
+      "matches": ["http://baijiahao.baidu.com/*","http://localhost:8080/*",
       		"http://123.206.231.254/spider/*"
      		],
       "js": ["jquery-1.10.2.js","income.js"],
       "run_at": "document_end",
+      "all_frames": true
+    },
+    {
+      "matches": ["http://ir.baidu.com/*"],
+      "js": ["jquery-1.10.2.js","income.js"],
+      "run_at": "document_start",
       "all_frames": true
     }
   ]
