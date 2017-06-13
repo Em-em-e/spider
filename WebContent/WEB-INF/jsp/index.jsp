@@ -81,7 +81,7 @@
 					<div class="container-fluid">
 						<div class="row-fluid">
 							<div class="span12">
-								<table id="accountTable" style="overflow:hidden;white-space:nowrap; ">
+								<table id="accountTable" style="overflow:hidden;white-space:nowrap;">
 								</table>
 								<br>
 							</div>

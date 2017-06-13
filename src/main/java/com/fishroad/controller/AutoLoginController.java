@@ -30,10 +30,10 @@ public class AutoLoginController {
 			System.out.println(b.errorMsg);
 			String cookies=JSONObject.toJSON(b.cookieStore.getCookies()).toString();
 	
-			if("登录成功".equals(b.errorMsg)){
+//			if("登录成功".equals(b.errorMsg)){
 				ac.setLoginCookie(cookies);
 				accountMapper.updateByPrimaryKey(ac);
-			}
+//			}
 			response.getWriter().print(cookies);
 		}
 	}

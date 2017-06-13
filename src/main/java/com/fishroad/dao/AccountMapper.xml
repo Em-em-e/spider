@@ -23,7 +23,7 @@
   </select>
   <select id="queryPage" resultMap="BaseResultMap">  
         select a.platform,a.username,a.password,a.email_password,CONCAT(u.username, CONCAT(',',u.name)) allot_user_query,
-        	a.last_login_time  
+        	a.last_login_time,a.login_cookie   
         from account a LEFT JOIN sys_user u on a.allot_user=u.id   
         <where>  
         	1=1
