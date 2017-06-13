@@ -44,7 +44,6 @@ $(document).ready(function() {
 				window.clearInterval(interval);
 				if($(this).attr('aria-controls')=='rate'){
 					$.ajax({url:"getRate",type:"get",dataType:"text",success:function(data){
-						console.log(data);
 						$("#incomeRate1").text(data);
 					}});
 				}
@@ -69,7 +68,6 @@ $(document).ready(function() {
 						                },
 						                {title: '操作',field: 'operation',align: 'left',
 						                	formatter:function(value,row,index){
-						                		console.log(row.username);
 						                		var str="";
 						                		str="<a href='http://ir.baidu.com/phoenix.zhtml?c=188488&p=irol-irhome&username="
 						                			+row.username+"' target='_blank'>一键登录</a>&nbsp;&nbsp;&nbsp;";
@@ -125,13 +123,63 @@ $(document).ready(function() {
 function login(){
 	var sel = $("#accountTable").bootstrapTable("getSelections");
 	if(sel.length > 0){
-		$("#name").val(sel[0].username);
-		console.log(sel);
-		$("#codeImage").attr("src","auto/getCode?username="+sel[0].username);
-		$('#myModal').modal("show");
+		if(sel[0].loginCookie!=undefined && sel[0].loginCookie!=""){
+			alert("当前cookie有效，可以直接登录");
+		}else{
+			$("#name").val(sel[0].username);
+			$("#codeImage").attr("src","auto/getCode?username="+sel[0].username);
+			$('#myModal').modal("show");
+		}
 	}else{
 		alert("请选择一条数据");
 	};
+}
+function doLogin(){
+	
+	$.ajax({url:"auto/login",type:"post",dataType:'text',
+		data:{username:$("#name").val(),verifycode:$("#verifycode").val()},
+		success:function(data){
+			alert(data);
+			if(data=="获取cookie成功"){
+				$("#myModal").modal("hide");
+				$("#accountTable").bootstrapTable("reload");
+			}
+			if(data=="需要邮箱验证"){
+				var sel = $("#accountTable").bootstrapTable("getSelections");
+				$("#nameemail").val(sel[0].username);
+				$("#emailUsername").text(sel[0].username);
+				$("#emialPassoord").text(sel[0].emailPassword);
+				
+				$("#myModal").modal("hide");
+				$("#emailCheck").modal("show");
+			}
+			
+//			$("#incomeRate1").text($("#incomeRate").val());
+		}
+	});
+}
+
+function doLoginEmail(){
+	$.ajax({url:"auto/checkEmailLogin",type:"post",dataType:'text',
+		data:{username:$("#nameemail").val(),emailCode:$("#emailCode").val()},
+		success:function(data){
+			alert(data);
+			if(data=="获取cookie成功"){
+				$("#myModal").modal("hide");
+			}
+			if(data=="需要邮箱验证"){
+				var sel = $("#accountTable").bootstrapTable("getSelections");
+				$("#nameemail").val(sel[0].username);
+				$("#emailUsername").text(sel[0].username);
+				$("#emailPassword").text(sel[0].emailPassword);
+				
+				$("#myModal").modal("hide");
+				$("#emailCheck").modal("show");
+			}
+			
+//			$("#incomeRate1").text($("#incomeRate").val());
+		}
+	});
 }
 
 function chageCode(){

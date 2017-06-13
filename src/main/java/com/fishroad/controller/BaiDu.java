@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -80,7 +81,7 @@ public class BaiDu {
         	sendEmailCode();
         	break;
         case 18://需要身份验证，发送邮件验证码
-        	sendEmailCode();
+        	errorMsg="该账号未绑定邮箱，请先绑定邮箱";
         	break;
         case 0:
         	errorMsg="登录成功";
@@ -113,8 +114,8 @@ public class BaiDu {
         params.add(new BasicNameValuePair("gid", ""));
         params.add(new BasicNameValuePair("quick_user", "0"));
         
-        params.add(new BasicNameValuePair("logintype", "dialogLogin"));
-//        params.add(new BasicNameValuePair("logintype", "basicLogin"));
+//        params.add(new BasicNameValuePair("logintype", "dialogLogin"));
+        params.add(new BasicNameValuePair("logintype", "basicLogin"));
         params.add(new BasicNameValuePair("logLoginType", "pc_loginBasic"));
         params.add(new BasicNameValuePair("idc", ""));
         params.add(new BasicNameValuePair("loginmerge", "true"));
@@ -151,11 +152,14 @@ public class BaiDu {
         if (codem.find()) {
             context.put("codeString", codem.group(1));
         }
-        Matcher authtoken = Pattern.compile("auth[tT]oken=(\\w+)&")
-                .matcher(string);
-        if (authtoken.find()) {
-            context.put("authtoken", codem.group(1));
-        }
+        
+//        Matcher authtoken = Pattern.compile("authtoken=.+&")
+//                .matcher(string);
+//        if (authtoken.find()) {
+        String auth=string.substring(string.indexOf("authtoken=")+10, string.indexOf("&", string.indexOf("authtoken=")));
+        if(auth.length()>0)
+            context.put("authtoken", string.substring(string.indexOf("authtoken=")+10, string.indexOf("&", string.indexOf("authtoken="))));
+//        }
         errorhandle();
     }
     
@@ -170,8 +174,10 @@ public class BaiDu {
         		+ "&type=email&jsonp=1&apiver=v3&verifychannel=&action=check&vcode="+context.get("vcode")
         		+ "&questionAndAnswer=&needsid=&rsakey=&countrycode=&subpro=&callback=bd__cbs__51hc1m"));
         res = client.execute(get);
-        Matcher m = Pattern.compile("no\": \"(\\d+)\"").matcher(
-                EntityUtils.toString(res.getEntity()));
+        String respCont=EntityUtils.toString(res.getEntity());
+        System.out.println(respCont);
+        
+        Matcher m = Pattern.compile("no\": \"(\\d+)\"").matcher(respCont);
         if (m.find()) {
             switch (Integer.valueOf(m.group(1))) {
             case 62004:
@@ -186,23 +192,49 @@ public class BaiDu {
             }
         }
     }
-    
+    public void checkEmailCode(String vcode) throws Exception{
+    	get.setURI(new URI("https://passport.baidu.com/v2/sapi/authwidgetverify?authtoken="+context.get("authtoken")
+		+ "&type=email&jsonp=1&apiver=v3&action=check&vcode="+vcode));
+		res = client.execute(get);
+		String respCont=EntityUtils.toString(res.getEntity());
+		System.out.println(respCont);
+		
+		Matcher m = Pattern.compile("no\":\'(\\d+)\'").matcher(respCont);
+		Matcher e = Pattern.compile("msg\":\'(.*)\'").matcher(respCont);
+		if (m.find()) {
+		    switch (Integer.valueOf(m.group(1))) {
+		    case 62004:
+		    	System.out.println("验证码错误");
+		    default:
+		    	if(e.find())
+		    		System.out.println(e.group());
+		        break;
+		    }
+		}
+    }
     /***
      * 发送邮件验证码
      * @throws Exception
      */
     public void sendEmailCode() throws Exception{
     	get.setURI(new URI("https://passport.baidu.com/v2/sapi/authwidgetverify?authtoken="+context.get("authtoken")
-    			+ "&type=email&jsonp=1&apiver=v3&verifychannel=&action=send&vcode="
-    			+ "&questionAndAnswer=&needsid=&rsakey=&countrycode=&subpro=&callback=bd__cbs__74ssfd"));
+    			+ "&type=email&jsonp=1&apiver=v3&action=send"));
         res = client.execute(get);
-        Matcher m = Pattern.compile("no\": \"(\\d+)\"").matcher(
-                EntityUtils.toString(res.getEntity()));
+        String respCont=EntityUtils.toString(res.getEntity());
+        System.out.println(respCont);
+        
+        Matcher m = Pattern.compile("no\":\'(\\d+)\'").matcher(respCont);
+        Matcher e = Pattern.compile("msg\":\'(.*)\'").matcher(respCont);
         if (m.find()) {
             switch (Integer.valueOf(m.group(1))) {
             case 110000:
                 System.out.println("发送成功");
+                errorMsg="需要邮箱验证";
                 break;
+            case 110002:
+            	if(e.find())
+            		System.out.println(e.group(1));
+            	break;
             default:
                 break;
             }

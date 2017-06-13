@@ -95,18 +95,39 @@
 				                <h4 class="modal-title" id="myModalLabel">获取有效Cookie</h4>
 				            </div>
 				            <div class="modal-body">
-								<form action="auto/login" id="loginUser" method="post">
-								    <div class="form-group">
-								        <input id="name" name="username" type="hidden"/>
-								    </div>
-								    <div class="form-group">
-								        验证码：<input id="verifycode" name="verifycode" type="text"/>
-								        <!--这里img标签的src属性的值为后台实现图片验证码方法的请求地址-->
-								        <label><img type="image" src="" id="codeImage" onclick="chageCode()" title="图片看不清？点击重新获取验证码" style="cursor:pointer;"/></label>
-								        <label><a onclick="chageCode()">换一张</a></label>
-								    </div>
-								    <input type="submit" class="btn btn-default" value="提交"/>
-								</form>
+							    <div class="form-group">
+							        <input id="name" name="username" type="hidden"/>
+							    </div>
+							    <div class="form-group">
+							        验证码：<input id="verifycode" name="verifycode" type="text"/>
+							        <!--这里img标签的src属性的值为后台实现图片验证码方法的请求地址-->
+							        <label><img type="image" src="" id="codeImage" onclick="chageCode()" title="图片看不清？点击重新获取验证码" style="cursor:pointer;"/></label>
+							        <label><a onclick="chageCode()">换一张</a></label>
+							    </div>
+							    <input type="button" class="btn btn-default" onclick="doLogin()" value="提交"/>
+							</div>
+				            <div class="modal-footer">
+				                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				            </div>
+				        </div><!-- /.modal-content -->
+				    </div><!-- /.modal -->
+				</div>
+				<div class="modal fade" id="emailCheck" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				    <div class="modal-dialog">
+				        <div class="modal-content">
+				            <div class="modal-header">
+				                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				                <h4 class="modal-title" id="myModalLabel">邮箱验证码验证</h4>
+				            </div>
+				            <div class="modal-body">
+							    <div class="form-group">
+							    邮箱：<span id="emailUsername"></span> &nbsp;&nbsp;邮箱密码：<span id="emialPassoord"></span>
+							        <input id="nameemail" name="username" type="hidden"/>
+							    </div>
+							    <div class="form-group">
+							        验证码：<input id="emailCode" name="emailCode" type="text"/>
+							    </div>
+							    <input type="button" class="btn btn-default" onclick="doLoginEmail()" value="提交"/>
 							</div>
 				            <div class="modal-footer">
 				                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>

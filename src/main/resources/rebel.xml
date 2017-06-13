@@ -7,15 +7,15 @@
 <application generated-by="eclipse" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zeroturnaround.com" xsi:schemaLocation="http://www.zeroturnaround.com http://update.zeroturnaround.com/jrebel/rebel-2_1.xsd">
 
 	<classpath>
-		<dir name="C:/Users/fll64049/Git/test01/target/classes">
+		<dir name="C:/Users/Administrator/git/spider/target/classes">
 		</dir>
-		<dir name="C:/Users/fll64049/Git/test01/target/test-classes">
+		<dir name="C:/Users/Administrator/git/spider/target/test-classes">
 		</dir>
 	</classpath>
 
 	<web>
 		<link target="/">
-			<dir name="C:/Users/fll64049/Git/test01/WebContent">
+			<dir name="C:/Users/Administrator/git/spider/WebContent">
 			</dir>
 		</link>
 	</web>
