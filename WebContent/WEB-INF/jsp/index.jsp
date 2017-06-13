@@ -9,17 +9,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <meta name="format-detection" content="telephone=no">
         <title>网易新闻数据爬虫系统</title>
-        <script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
-        <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
-        <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/common.css" />
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/slide.css" />
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/bootstrap.css" />
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/flat-ui.min.css" />
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/jquery.nouislider.css">
         
 		<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery/jquery-1.11.0.min.js"></script>
-		<script type="text/javascript" src="${pageContext.request.contextPath}/js/bootstrap/bootstrap.min.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/js/bootstrap/bootstrap.js"></script>
 		<link href="http://cdn.bootcss.com/bootstrap-table/1.9.1/bootstrap-table.min.css" rel="stylesheet"/> 
 		<script src="http://cdn.bootcss.com/bootstrap-table/1.9.1/bootstrap-table.min.js"></script>
 		<script src="http://cdn.bootcss.com/bootstrap-table/1.9.1/locale/bootstrap-table-zh-CN.min.js"></script>
@@ -59,8 +56,7 @@
                 </a>
                 <!-- Tab panes -->
                 <div class="tab-content">
-                
-            <!-- 账号管理 -->
+<!-- 账号管理 -->
             <div role="tabpanel" class="tab-pane" id="regu">
                 <div class="check-div form-inline">
                     <div class="col-xs-3">
@@ -77,19 +73,49 @@
                 </div>
                 <div class="data-div">
                     <div class="row tableHeader">
+						<div class="pull-right" style="right:50px;position:absolute;margin-top:0px">
+							<button class="btn btn-primary" style="height: 30px" onclick="login()">获取cookie</button>
+						</div>
                     </div>
 					<div class="container-fluid">
 						<div class="row-fluid">
 							<div class="span12">
-								<table id="accountTable" style="overflow:hidden;white-space:nowrap; ">
+								<table id="accountTable" style="overflow:hidden;white-space:nowrap;">
 								</table>
 								<br>
 							</div>
 						</div>
 					</div>
 				</div>
+				<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				    <div class="modal-dialog">
+				        <div class="modal-content">
+				            <div class="modal-header">
+				                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				                <h4 class="modal-title" id="myModalLabel">获取有效Cookie</h4>
+				            </div>
+				            <div class="modal-body">
+								<form action="auto/login" id="loginUser" method="post">
+								    <div class="form-group">
+								        <input id="name" name="username" type="hidden"/>
+								    </div>
+								    <div class="form-group">
+								        验证码：<input id="verifycode" name="verifycode" type="text"/>
+								        <!--这里img标签的src属性的值为后台实现图片验证码方法的请求地址-->
+								        <label><img type="image" src="" id="codeImage" onclick="chageCode()" title="图片看不清？点击重新获取验证码" style="cursor:pointer;"/></label>
+								        <label><a onclick="chageCode()">换一张</a></label>
+								    </div>
+								    <input type="submit" class="btn btn-default" value="提交"/>
+								</form>
+							</div>
+				            <div class="modal-footer">
+				                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				            </div>
+				        </div><!-- /.modal-content -->
+				    </div><!-- /.modal -->
+				</div>
             </div>
-            <!--收益比例-->
+<!--收益比例-->
             <div role="tabpanel" class="tab-pane" id="rate">
                 <br><br><br>
            		<div class="col-xs-4">
@@ -98,7 +124,7 @@
               		 <button class="btn btn-white btn-xs " onclick="updateRate()">提交 </button>
                	</div>
             </div>
-            <!--批量导入-->
+<!--批量导入-->
             <div role="tabpanel" class="tab-pane" id="import">
                 <br><br><br>
            		<div class="col-xs-4">
@@ -108,7 +134,7 @@
                	</div>
             </div>
                     
-            <!--所有文章模块-->
+<!--所有文章模块-->
             <div role="tabpanel" class="tab-pane active" id="user">
                 <div class="check-div form-inline">
                     <div class="col-xs-3">
@@ -139,7 +165,7 @@
 				</div>
                 <!-- /.modal -->
             </div>
-            <!--爬虫管理模块-->
+<!--爬虫管理模块-->
             <div role="tabpanel" class="tab-pane" id="chan" style="padding-top: 50px;">
                 <div class="data-div">
                     <div class="tablebody col-lg-10 col-lg-offset-1">

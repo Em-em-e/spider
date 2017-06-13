@@ -1,6 +1,7 @@
 package com.fishroad.controller;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,21 +21,46 @@ public class AutoLoginController {
 	@Autowired
 	private AccountMapper accountMapper;
 	
-	@RequestMapping("/login")
-	public void autoLogin(HttpServletRequest request,HttpServletResponse response,String username) throws IOException{
+	@RequestMapping("getCode")
+	public void getCode(HttpServletRequest request,HttpServletResponse response,String username) throws Exception{
 		response.setCharacterEncoding("UTF-8");
 		Account ac=accountMapper.findByUsername(username);
-		if(ac!=null){
-			BaiDu b=new BaiDu();
-			b.doLogin(ac.getUsername(), ac.getPassword());
-			System.out.println(b.errorMsg);
-			String cookies=JSONObject.toJSON(b.cookieStore.getCookies()).toString();
+		BaiDu b=(BaiDu) request.getSession().getAttribute("login-"+username);
+		if(b==null){
+			b=new BaiDu(ac.getUsername(), ac.getPassword());
+			b.login();
+		}
+		
+		if("257".equals(b.errorMsg)){
+			OutputStream os=response.getOutputStream();
+			b.getCode(os);
+			request.getSession().setAttribute("login-"+username, b);
+			response.getOutputStream().flush();
+		}
+		if("登录成功".equals(b.errorMsg)){
+			response.getWriter().print("<script>alert('获取成功！');</script>");
+		}
+	}
 	
-			if("登录成功".equals(b.errorMsg)){
-				ac.setLoginCookie(cookies);
-				accountMapper.updateByPrimaryKey(ac);
+	@RequestMapping("/login")
+	public void autoLogin(HttpServletRequest request,HttpServletResponse response,String username,String verifycode) throws Exception{
+		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
+		Account ac=accountMapper.findByUsername(username);
+		if(ac!=null){
+			BaiDu b=(BaiDu) request.getSession().getAttribute("login-"+username);
+			if(b!=null){
+				b.volidate(verifycode);//验证码校验
+				
+				System.out.println(b.errorMsg);
+				String cookies=JSONObject.toJSON(b.cookieStore.getCookies()).toString();
+		
+				if("登录成功".equals(b.errorMsg)){
+					ac.setLoginCookie(cookies);
+					accountMapper.updateByPrimaryKey(ac);
+				}
+				response.getWriter().print(cookies);
 			}
-			response.getWriter().print(cookies);
 		}
 	}
 	

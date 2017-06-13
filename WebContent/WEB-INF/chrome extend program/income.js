@@ -1,22 +1,19 @@
-console.log(window.location.href);
 
 if(window.location.href.indexOf('ir.baidu.com')>0){
 	var str=window.location.href;
 	var username=str.substring(str.lastIndexOf('=')+1);
-	console.log(username);
 	$.get("http://localhost:8080/spider/auto/getCookie?username="+username,function(data){
 		var cookies=eval('('+data+')');
-		console.log(cookies);
 		$.each(cookies, function(i, obj) {
 		    setCookie(obj);
 		});
 	});
 	window.location.href="http://baijiahao.baidu.com";
+	location.replace("http://baijiahao.baidu.com");
 }
 
 //*****************************百度百家**********************************
 if(window.location.href.indexOf('baijiahao.baidu.com')>0){
-	console.log("baijiahao.baidu.com");
 	//获取倍数
 	$.get("http://123.206.231.254/spider/getRate",function(data){
 		var rate=parseFloat(data);
@@ -56,9 +53,6 @@ if(window.location.href.indexOf('baijiahao.baidu.com')>0){
 		}
 	},"json");
 }
-
-
-
 function setCookie(obj)
 {
 	var Days = 30;

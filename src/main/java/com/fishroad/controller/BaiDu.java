@@ -1,8 +1,6 @@
 package com.fishroad.controller;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URI;
@@ -14,7 +12,6 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.CookieStore;
@@ -46,8 +43,10 @@ public class BaiDu {
     public String errorMsg;
     public String respString;
 
-    public BaiDu() {
+    public BaiDu(String username,String password) {
         try {
+        	context.put("username", username);
+            context.put("pass", password);
             cookieStore = new BasicCookieStore();
             List<Header> headers = new ArrayList<Header>();
             headers.add(new BasicHeader("user-agent",
@@ -59,67 +58,30 @@ public class BaiDu {
             get.setURI(new URI("http://pan.baidu.com/"));
             client.execute(get);
             getToken();
+            Encrypt();
         } catch (Exception e) {
             this.errorMsg="初始化失败！";
             e.printStackTrace();
         }
     }
     
-    public String doLogin(String username,String password){
-    	context.put("username", username);
-        context.put("pass", password);
-        try {
-			Encrypt();
-			login();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return errorMsg="登录失败";
-		}
-        return errorMsg;
-    }
+    
 
-    /**
-     * @throws Exception
-     */
-    public void Encrypt() throws Exception {
-        get = new HttpGet();
-        get.setURI(new URI("https://passport.baidu.com/v2/getpublickey?token="
-                + context.get("token") + "&tpl=mn&apiver=v3&tt="
-                + System.currentTimeMillis()));
-        res = client.execute(get);
-        String string = EntityUtils.toString(res.getEntity());
-        Matcher matcher = Pattern.compile(
-                "-----BEGIN PUBLIC KEY-----(.*)-----END PUBLIC KEY-----")
-                .matcher(string);
-        if (matcher.find()) {
-            String s = matcher.group(1);
-            context.put("pass", RSAUtil.encrypt(
-                    s.replace("\\n", "").replace("\\/", "/"),
-                    context.get("pass")));
-        }
-        Matcher matcher2 = Pattern.compile("\"key\":'(.+)'}$").matcher(string);
-        if (matcher2.find()) {
-            context.put("rsakey", matcher2.group(1));
-        }
-    }
-
-	private void errorhandle() throws Exception {
+	public void errorhandle() throws Exception {
         if (context.get("error") == null) {
             errorMsg="登录成功";
             return;
         }
         switch (Integer.valueOf(context.get("error"))) {
         case 257:
-            get.setURI(new URI("https://passport.baidu.com/cgi-bin/genimage?"
-                    + context.get("codeString")));
-            res = client.execute(get);
-            File file = new File("C:/Users/Administrator/Desktop/baidu/" + context.get("username") + ".gif");
-            FileUtils.touch(file);
-            OutputStream os = new FileOutputStream(file);
-            res.getEntity().writeTo(os);
-            os.close();
-            volidate();
+            errorMsg="257";
             break;
+        case 120021://需要身份验证，发送邮件验证码
+        	sendEmailCode();
+        	break;
+        case 18://需要身份验证，发送邮件验证码
+        	sendEmailCode();
+        	break;
         case 0:
         	errorMsg="登录成功";
             break;
@@ -127,25 +89,7 @@ public class BaiDu {
             break;
         }
     }
-
-    public String getToken() throws Exception {
-        get.setURI(new URI(
-                "https://passport.baidu.com/v2/api/?getapi&class=login&tpl=mn&tangram=true"));
-        res = client.execute(get);
-        BufferedReader br = new BufferedReader(new InputStreamReader(res
-                .getEntity().getContent()));
-        String line = null;
-        while ((line = br.readLine()) != null) {
-            if (line.contains("login_token")) {
-                String token = line.substring(line.indexOf("'") + 1,
-                        line.lastIndexOf("'"));
-                context.put("token", token);
-                return context.get("token");
-            }
-        }
-        return null;
-    }
-
+	
     public void login() throws Exception {
         List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>() {
             @Override
@@ -164,11 +108,13 @@ public class BaiDu {
         params.add(new BasicNameValuePair("tpl", "mn"));
         params.add(new BasicNameValuePair("tt", System.currentTimeMillis() + ""));
         params.add(new BasicNameValuePair("safeflg", String.valueOf(0)));
-        params.add(new BasicNameValuePair("u", "http://pan.baidu.com/"));
+        params.add(new BasicNameValuePair("u", "http://baijiahao.baidu.com/"));
         params.add(new BasicNameValuePair("detect", "1"));
         params.add(new BasicNameValuePair("gid", ""));
         params.add(new BasicNameValuePair("quick_user", "0"));
-        params.add(new BasicNameValuePair("logintype", "basicLogin"));
+        
+        params.add(new BasicNameValuePair("logintype", "dialogLogin"));
+//        params.add(new BasicNameValuePair("logintype", "basicLogin"));
         params.add(new BasicNameValuePair("logLoginType", "pc_loginBasic"));
         params.add(new BasicNameValuePair("idc", ""));
         params.add(new BasicNameValuePair("loginmerge", "true"));
@@ -205,14 +151,67 @@ public class BaiDu {
         if (codem.find()) {
             context.put("codeString", codem.group(1));
         }
-        respString=string;
+        Matcher authtoken = Pattern.compile("auth[tT]oken=(\\w+)&")
+                .matcher(string);
+        if (authtoken.find()) {
+            context.put("authtoken", codem.group(1));
+        }
         errorhandle();
     }
-
-
-    private void volidate() throws Exception {
+    
+    /**
+     * 验证邮件验证码
+     * @throws Exception 
+     */
+    public void checkEmailCode() throws Exception{
         System.out.println("请输入验证码:");
-        context.put("verifycode", new Scanner(System.in).next());
+        context.put("vcode", new Scanner(System.in).nextLine());
+        get.setURI(new URI("https://passport.baidu.com/v2/sapi/authwidgetverify?authtoken="+context.get("authtoken")
+        		+ "&type=email&jsonp=1&apiver=v3&verifychannel=&action=check&vcode="+context.get("vcode")
+        		+ "&questionAndAnswer=&needsid=&rsakey=&countrycode=&subpro=&callback=bd__cbs__51hc1m"));
+        res = client.execute(get);
+        Matcher m = Pattern.compile("no\": \"(\\d+)\"").matcher(
+                EntityUtils.toString(res.getEntity()));
+        if (m.find()) {
+            switch (Integer.valueOf(m.group(1))) {
+            case 62004:
+            	this.errorMsg="验证码错误";
+                break;
+            case 0:
+                System.out.println("验证成功");
+                login();
+                break;
+            default:
+                break;
+            }
+        }
+    }
+    
+    /***
+     * 发送邮件验证码
+     * @throws Exception
+     */
+    public void sendEmailCode() throws Exception{
+    	get.setURI(new URI("https://passport.baidu.com/v2/sapi/authwidgetverify?authtoken="+context.get("authtoken")
+    			+ "&type=email&jsonp=1&apiver=v3&verifychannel=&action=send&vcode="
+    			+ "&questionAndAnswer=&needsid=&rsakey=&countrycode=&subpro=&callback=bd__cbs__74ssfd"));
+        res = client.execute(get);
+        Matcher m = Pattern.compile("no\": \"(\\d+)\"").matcher(
+                EntityUtils.toString(res.getEntity()));
+        if (m.find()) {
+            switch (Integer.valueOf(m.group(1))) {
+            case 110000:
+                System.out.println("发送成功");
+                break;
+            default:
+                break;
+            }
+        }
+    }
+
+    public void volidate(String verifycode) throws Exception {
+        System.out.println("请输入验证码:");
+        context.put("verifycode", verifycode);
         get.setURI(new URI("https://passport.baidu.com/v2/?checkvcode&token="
                 + context.get("token") + "&tpl=mn&apiver=v3&tt="
                 + System.currentTimeMillis() + "&verifycode="
@@ -233,6 +232,53 @@ public class BaiDu {
             default:
                 break;
             }
+        }
+    }
+    public void getCode(OutputStream os) throws Exception{
+		get.setURI(new URI("https://passport.baidu.com/cgi-bin/genimage?"
+                + context.get("codeString")));
+        res = client.execute(get);
+//        File file = new File("C:/Users/Administrator/Desktop/baidu/" + context.get("username") + ".gif");
+//        FileUtils.touch(file);
+//        OutputStream os = new FileOutputStream(file);
+        res.getEntity().writeTo(os);
+	}
+    public String getToken() throws Exception {
+        get.setURI(new URI(
+                "https://passport.baidu.com/v2/api/?getapi&class=login&tpl=mn&tangram=true"));
+        res = client.execute(get);
+        BufferedReader br = new BufferedReader(new InputStreamReader(res
+                .getEntity().getContent()));
+        String line = null;
+        while ((line = br.readLine()) != null) {
+            if (line.contains("login_token")) {
+                String token = line.substring(line.indexOf("'") + 1,
+                        line.lastIndexOf("'"));
+                context.put("token", token);
+                return context.get("token");
+            }
+        }
+        return null;
+    }
+    public void Encrypt() throws Exception {
+        get = new HttpGet();
+        get.setURI(new URI("https://passport.baidu.com/v2/getpublickey?token="
+                + context.get("token") + "&tpl=mn&apiver=v3&tt="
+                + System.currentTimeMillis()));
+        res = client.execute(get);
+        String string = EntityUtils.toString(res.getEntity());
+        Matcher matcher = Pattern.compile(
+                "-----BEGIN PUBLIC KEY-----(.*)-----END PUBLIC KEY-----")
+                .matcher(string);
+        if (matcher.find()) {
+            String s = matcher.group(1);
+            context.put("pass", RSAUtil.encrypt(
+                    s.replace("\\n", "").replace("\\/", "/"),
+                    context.get("pass")));
+        }
+        Matcher matcher2 = Pattern.compile("\"key\":'(.+)'}$").matcher(string);
+        if (matcher2.find()) {
+            context.put("rsakey", matcher2.group(1));
         }
     }
 }

@@ -17,7 +17,7 @@ $(document).ready(function() {
 		                {title: '爬取时间',field: 'last_update_time',align: 'left',
 		                  formatter:function(value,row,index){ 
 		                	  var time=new Date(value);
-		                	  return time.format("yyyy-MM-dd hh:mm:ss");
+		                	  return value?time.format("yyyy-MM-dd hh:mm:ss"):"-";
 		                  },sortable:'true'}
 		                ]
 	  	});
@@ -53,7 +53,8 @@ $(document).ready(function() {
 						url: "account.json", 
 						dataType: "json",
 						pagination: true, //分页
-						singleSelect: false,
+						singleSelect: true,
+						clickToSelect:true,
 						sidePagination: "server", //服务端处理分页
 						      columns: [{title: '',field: 'state',align: 'center',checkbox:"true"},
 						                {title: '平台',field: 'platform',align: 'left',sortable:'true'},
@@ -61,24 +62,27 @@ $(document).ready(function() {
 						                {title: '密码',field: 'password',align: 'left',sortable:'true'},
 						                {title: '邮箱密码',field: 'emailPassword',align: 'center',sortable:'true'},
 						                {title: '分配用户',field: 'allotUserQuery',align: 'left',sortable:'true'},
-						                {title: 'Cookie',field: 'isActive',align: 'left',sortable:'true'},
+						                {title: 'Cookie',field: 'loginCookie',align:'left',sortable:'true',
+						                	formatter:function(value,row,index){
+						                		return (value)?"有效":"-";
+						                	}
+						                },
 						                {title: '操作',field: 'operation',align: 'left',
 						                	formatter:function(value,row,index){
 						                		console.log(row.username);
 						                		var str="";
 						                		str="<a href='http://ir.baidu.com/phoenix.zhtml?c=188488&p=irol-irhome&username="
 						                			+row.username+"' target='_blank'>一键登录</a>&nbsp;&nbsp;&nbsp;";
-						                		str+="<a href='auto/login?username="+row.username+"'>获取cookie</a>";
 						                		return str;
 						                	},sortable:'true'},
-						                {title: '最后登录时间',field: 'lastLoginTime',align: 'left',
-						                  formatter:function(value,row,index){
-						                	  if(value){
-						                		  var time=new Date(value);
-						                		  return time.format("yyyy-MM-dd hh:mm:ss");
-						                	  }else
-						                		  return "-";
-						                  },sortable:'true'}
+//						                {title: '最后登录时间',field: 'lastLoginTime',align: 'left',
+//						                  formatter:function(value,row,index){
+//						                	  if(value){
+//						                		  var time=new Date(value);
+//						                		  return time.format("yyyy-MM-dd hh:mm:ss");
+//						                	  }else
+//						                		  return "-";
+//						                  },sortable:'true'}
 						                ]
 					  	});
 				}
@@ -118,7 +122,24 @@ $(document).ready(function() {
 	    })
 	    
 });
+function login(){
+	var sel = $("#accountTable").bootstrapTable("getSelections");
+	if(sel.length > 0){
+		$("#name").val(sel[0].username);
+		console.log(sel);
+		$("#codeImage").attr("src","auto/getCode?username="+sel[0].username);
+		$('#myModal').modal("show");
+	}else{
+		alert("请选择一条数据");
+	};
+}
 
+function chageCode(){
+	var sel = $("#accountTable").bootstrapTable("getSelections");
+	if(sel.length > 0){
+		$("#codeImage").attr("src","auto/getCode?username="+sel[0].username+"&a="+new Date());
+	}
+}
 
 function doSearch(){
 	var title=encodeURI($("#title").val());
