@@ -8,36 +8,24 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.alibaba.fastjson.JSONObject;
-import com.fishroad.dao.SysParamMapper;
 import com.fishroad.services.NewsServiceImpl;
 import com.fishroad.util.MyProcesserFactory;
 import com.fishroad.vo.News;
 import com.fishroad.vo.StatusModel;
-import com.fishroad.vo.SysParam;
 
 import us.codecraft.webmagic.Spider;
 
 
 @Controller
-public class UserController {
+public class SpiderController {
 	
 	@Resource
 	private NewsServiceImpl newsServiceImpl;
-	@Autowired
-	private SysParamMapper sysParamMapper;
 	
-	@RequestMapping("/index")
-	public String startJob(HttpServletRequest request,Model model){
-		SysParam sp=sysParamMapper.selectByPrimaryKey(1);
-		model.addAttribute("incomeRate", sp.getParamValue());
-		return "index";
-	}
 	
 	@RequestMapping("list.json")
 	public void list(HttpServletRequest request,HttpServletResponse response,int limit,int offset,News news,
@@ -124,29 +112,5 @@ public class UserController {
 		response.getWriter().print(re.toString());
 	}
 	
-	@RequestMapping("/getRate")
-	public void getRate(HttpServletRequest request,HttpServletResponse response) throws IOException {
-		SysParam sp=sysParamMapper.selectByPrimaryKey(1);
-		response.setCharacterEncoding("UTF-8");
-		response.getWriter().print(sp.getParamValue());
-	}
-	@RequestMapping("/updateRate")
-	public void updateRate(HttpServletRequest request,HttpServletResponse response,String incomeRate) throws IOException{
-		response.setCharacterEncoding("UTF-8");
-		if(incomeRate!=null && incomeRate!=""){
-			try {
-				Float.parseFloat(incomeRate);
-			} catch (Exception e) {
-				response.getWriter().print("请输入合法的数字");
-				return;
-			}
-			SysParam s=new SysParam();
-			s.setId(1);s.setParamName("rate");s.setParamValue(incomeRate);
-			sysParamMapper.updateByPrimaryKeySelective(s);
-			response.getWriter().print("修改成功！");
-		}else{
-			response.getWriter().print("请输入一个有效的数字！");
-		}
-	}
 
 }

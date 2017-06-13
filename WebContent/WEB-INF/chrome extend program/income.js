@@ -2,14 +2,13 @@
 if(window.location.href.indexOf('ir.baidu.com')>0){
 	var str=window.location.href;
 	var username=str.substring(str.lastIndexOf('=')+1);
-	$.get("http://localhost:8080/spider/auto/getCookie?username="+username,function(data){
+	$.get("http://123.206.231.254/spider/auto/getCookie?username="+username,function(data){
 		var cookies=eval('('+data+')');
 		$.each(cookies, function(i, obj) {
 		    setCookie(obj);
 		});
 	});
 	window.location.href="http://baijiahao.baidu.com";
-	location.replace("http://baijiahao.baidu.com");
 }
 
 //*****************************百度百家**********************************
@@ -58,7 +57,7 @@ function setCookie(obj)
 	var Days = 30;
 	var exp = new Date();
 	exp.setTime(exp.getTime() + Days*24*60*60*1000);
-	document.cookie = obj.name + "="+ obj.value + ";expires=" +obj.expiryDate+";path="+obj.path+";domain="+obj.domain;
+	document.cookie = obj.name + "="+ obj.value + ";expires=" +obj.expiryDate+";path=/;domain=baidu.com";
 }
 function fmoney(s, n)   
 {   
@@ -73,6 +72,4 @@ function fmoney(s, n)
    }   
    return t.split("").reverse().join("") + "." + r;   
 }
-	
-	
-	
+

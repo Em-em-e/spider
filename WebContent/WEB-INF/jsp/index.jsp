@@ -151,7 +151,8 @@
            		<div class="col-xs-4">
            			<h5>批量导入：</h5><br>
               		 <form action="imports" method="post" enctype="multipart/form-data">  
-					<input type="file" name="file" /> <input type="submit" value="Submit" /></form>  
+              		 分配给员工：
+					<input type="file" name="file" /> <input type="submit" value="提交" /></form>  
                	</div>
             </div>
                     

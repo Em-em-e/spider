@@ -123,26 +123,25 @@ $(document).ready(function() {
 function login(){
 	var sel = $("#accountTable").bootstrapTable("getSelections");
 	if(sel.length > 0){
-		if(sel[0].loginCookie!=undefined && sel[0].loginCookie!=""){
-			alert("当前cookie有效，可以直接登录");
-		}else{
+//		if(sel[0].loginCookie!=undefined && sel[0].loginCookie!=""){
+//			alert("当前cookie有效，可以直接登录");
+//		}else{
 			$("#name").val(sel[0].username);
 			$("#codeImage").attr("src","auto/getCode?username="+sel[0].username);
 			$('#myModal').modal("show");
-		}
+//		}
 	}else{
 		alert("请选择一条数据");
 	};
 }
 function doLogin(){
-	
 	$.ajax({url:"auto/login",type:"post",dataType:'text',
 		data:{username:$("#name").val(),verifycode:$("#verifycode").val()},
 		success:function(data){
 			alert(data);
 			if(data=="获取cookie成功"){
 				$("#myModal").modal("hide");
-				$("#accountTable").bootstrapTable("reload");
+				$("#accountTable").bootstrapTable("refresh");
 			}
 			if(data=="需要邮箱验证"){
 				var sel = $("#accountTable").bootstrapTable("getSelections");
@@ -153,8 +152,6 @@ function doLogin(){
 				$("#myModal").modal("hide");
 				$("#emailCheck").modal("show");
 			}
-			
-//			$("#incomeRate1").text($("#incomeRate").val());
 		}
 	});
 }
@@ -166,18 +163,8 @@ function doLoginEmail(){
 			alert(data);
 			if(data=="获取cookie成功"){
 				$("#myModal").modal("hide");
+				$("#accountTable").bootstrapTable("refresh");
 			}
-			if(data=="需要邮箱验证"){
-				var sel = $("#accountTable").bootstrapTable("getSelections");
-				$("#nameemail").val(sel[0].username);
-				$("#emailUsername").text(sel[0].username);
-				$("#emailPassword").text(sel[0].emailPassword);
-				
-				$("#myModal").modal("hide");
-				$("#emailCheck").modal("show");
-			}
-			
-//			$("#incomeRate1").text($("#incomeRate").val());
 		}
 	});
 }

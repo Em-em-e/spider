@@ -4,12 +4,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,7 +28,8 @@ import com.fishroad.util.RSAUtil;
 
 public class BaiDu {
 	HttpClient client;
-    Map<String, String> context = new HashMap<String, String>() {
+    @SuppressWarnings("serial")
+	Map<String, String> context = new HashMap<String, String>() {
 		@Override
 		public String put(String key, String value) {
             System.out.println(key + ":" + value);
@@ -80,7 +79,7 @@ public class BaiDu {
         case 120021://需要身份验证，发送邮件验证码
         	sendEmailCode();
         	break;
-        case 18://需要身份验证，发送邮件验证码
+        case 18:
         	errorMsg="该账号未绑定邮箱，请先绑定邮箱";
         	break;
         case 0:
@@ -92,7 +91,8 @@ public class BaiDu {
     }
 	
     public void login() throws Exception {
-        List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>() {
+        @SuppressWarnings("serial")
+		List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>() {
             @Override
             public boolean add(BasicNameValuePair e) {
                 if (e.getValue() == null) {
@@ -113,8 +113,6 @@ public class BaiDu {
         params.add(new BasicNameValuePair("detect", "1"));
         params.add(new BasicNameValuePair("gid", ""));
         params.add(new BasicNameValuePair("quick_user", "0"));
-        
-//        params.add(new BasicNameValuePair("logintype", "dialogLogin"));
         params.add(new BasicNameValuePair("logintype", "basicLogin"));
         params.add(new BasicNameValuePair("logLoginType", "pc_loginBasic"));
         params.add(new BasicNameValuePair("idc", ""));
@@ -163,35 +161,6 @@ public class BaiDu {
         errorhandle();
     }
     
-    /**
-     * 验证邮件验证码
-     * @throws Exception 
-     */
-    public void checkEmailCode() throws Exception{
-        System.out.println("请输入验证码:");
-        context.put("vcode", new Scanner(System.in).nextLine());
-        get.setURI(new URI("https://passport.baidu.com/v2/sapi/authwidgetverify?authtoken="+context.get("authtoken")
-        		+ "&type=email&jsonp=1&apiver=v3&verifychannel=&action=check&vcode="+context.get("vcode")
-        		+ "&questionAndAnswer=&needsid=&rsakey=&countrycode=&subpro=&callback=bd__cbs__51hc1m"));
-        res = client.execute(get);
-        String respCont=EntityUtils.toString(res.getEntity());
-        System.out.println(respCont);
-        
-        Matcher m = Pattern.compile("no\": \"(\\d+)\"").matcher(respCont);
-        if (m.find()) {
-            switch (Integer.valueOf(m.group(1))) {
-            case 62004:
-            	this.errorMsg="验证码错误";
-                break;
-            case 0:
-                System.out.println("验证成功");
-                login();
-                break;
-            default:
-                break;
-            }
-        }
-    }
     public void checkEmailCode(String vcode) throws Exception{
     	get.setURI(new URI("https://passport.baidu.com/v2/sapi/authwidgetverify?authtoken="+context.get("authtoken")
 		+ "&type=email&jsonp=1&apiver=v3&action=check&vcode="+vcode));
@@ -205,6 +174,11 @@ public class BaiDu {
 		    switch (Integer.valueOf(m.group(1))) {
 		    case 62004:
 		    	System.out.println("验证码错误");
+		    	break;
+		    case 110000:
+		    	System.out.println("邮箱验证成功");
+		    	errorMsg="邮箱验证成功";
+		    	break;
 		    default:
 		    	if(e.find())
 		    		System.out.println(e.group());
@@ -242,7 +216,6 @@ public class BaiDu {
     }
 
     public void volidate(String verifycode) throws Exception {
-        System.out.println("请输入验证码:");
         context.put("verifycode", verifycode);
         get.setURI(new URI("https://passport.baidu.com/v2/?checkvcode&token="
                 + context.get("token") + "&tpl=mn&apiver=v3&tt="

@@ -2,7 +2,6 @@ package com.fishroad.controller;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,17 +31,10 @@ public class AutoLoginController {
 			b.login();
 		}
 		
-		if("登录成功".equals(b.errorMsg)){
-			response.getWriter().print("<script>alert('获取成功！');</script>");
-		}else{
-			
-//		if("257".equals(b.errorMsg)){
-			OutputStream os=response.getOutputStream();
-			b.getCode(os);
-			request.getSession().setAttribute("login-"+username, b);
-			response.getOutputStream().flush();
-//		}
-		}
+		OutputStream os=response.getOutputStream();
+		b.getCode(os);
+		request.getSession().setAttribute("login-"+username, b);
+		response.getOutputStream().flush();
 	}
 	
 	@RequestMapping("/login")
@@ -64,11 +56,11 @@ public class AutoLoginController {
 					ac.setLoginCookie(cookies);
 					accountMapper.updateByPrimaryKey(ac);
 					response.setContentType("text/html;charset=utf-8");
-					response.getWriter().println("获取cookie成功");
+					response.getWriter().print("获取cookie成功");
 				}
 				if("该账号未绑定邮箱，请先绑定邮箱".equals(b.errorMsg)){
 					response.setContentType("text/html;charset=utf-8");
-					response.getWriter().println(b.errorMsg);
+					response.getWriter().print(b.errorMsg);
 				}
 			}
 		}
@@ -83,6 +75,13 @@ public class AutoLoginController {
 			BaiDu b=(BaiDu) request.getSession().getAttribute("login-"+username);
 			if(b!=null){
 				b.checkEmailCode(emailCode);
+				if("邮箱验证成功".equals(b.errorMsg)){
+					String cookies=JSONObject.toJSON(b.cookieStore.getCookies()).toString();
+					ac.setLoginCookie(cookies);
+					accountMapper.updateByPrimaryKey(ac);
+					response.setContentType("text/html;charset=utf-8");
+					response.getWriter().print("获取cookie成功");
+				}
 			}
 		}
 	}
