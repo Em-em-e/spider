@@ -17,9 +17,9 @@
         
 		<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery/jquery-1.11.0.min.js"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/js/bootstrap/bootstrap.js"></script>
-		<link href="http://cdn.bootcss.com/bootstrap-table/1.9.1/bootstrap-table.min.css" rel="stylesheet"/> 
-		<script src="http://cdn.bootcss.com/bootstrap-table/1.9.1/bootstrap-table.min.js"></script>
-		<script src="http://cdn.bootcss.com/bootstrap-table/1.9.1/locale/bootstrap-table-zh-CN.min.js"></script>
+		<link href="${pageContext.request.contextPath}/js/bootstrap/bootstrap-table.min.css" rel="stylesheet"/> 
+		<script src="${pageContext.request.contextPath}/js/bootstrap/bootstrap-table.min.js"></script>
+		<script src="${pageContext.request.contextPath}/js/bootstrap/bootstrap-table-zh-CN.js"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/js/common.js"></script>
 		<script src="${pageContext.request.contextPath}/js/pagejs/index.js"></script>
     </head>
@@ -56,6 +56,40 @@
                 </a>
                 <!-- Tab panes -->
                 <div class="tab-content">
+<!-- 用户管理 -->
+            <div role="tabpanel" class="tab-pane" id="scho">
+                <div class="check-div form-inline">
+                    <div class="col-xs-3">
+                        	平台：<input type="text" id="platform" name="platform" class="form-control input-sm" placeholder="平台代码">
+                    </div>
+                    <div class="col-xs-4">
+                   		 用户名：<input type="text" id="username" name="username" class="form-control input-sm" placeholder="平台账号用户名">
+                    </div>
+                    <div class="col-xs-5">
+                        	分配用户：<input type="text" id="allotUser" name="allotUser" class="form-control input-sm" placeholder="分配的系统用户名或用户姓名">
+                        &nbsp;&nbsp;&nbsp;<button class="btn btn-white btn-xs " onclick="doSearchAccount()">查 询 </button>
+                        <button class="btn btn-white btn-xs " onclick="doClear()">清除 </button>
+                    </div>
+                </div>
+                <div class="data-div">
+                    <div class="row tableHeader">
+						<div class="pull-right" style="right:50px;position:absolute;margin-top:0px">
+							<button class="btn btn-primary" style="height: 30px" onclick="login()">获取cookie</button>
+						</div>
+                    </div>
+					<div class="container-fluid">
+						<div class="row-fluid">
+							<div class="span12">
+								<table id="userTable" style="overflow:hidden;white-space:nowrap;">
+								</table>
+								<br>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+                
+                
 <!-- 账号管理 -->
             <div role="tabpanel" class="tab-pane" id="regu">
                 <div class="check-div form-inline">
@@ -73,7 +107,7 @@
                 </div>
                 <div class="data-div">
                     <div class="row tableHeader">
-						<div class="pull-right" style="right:50px;position:absolute;margin-top:0px">
+						<div class="pull-right" style="right:300px;position:absolute;margin-top:0px">
 							<button class="btn btn-primary" style="height: 30px" onclick="login()">获取cookie</button>
 						</div>
                     </div>
