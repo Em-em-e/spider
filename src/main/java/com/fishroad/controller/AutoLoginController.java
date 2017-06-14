@@ -6,10 +6,14 @@ import java.io.OutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.client.CookieStore;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fishroad.dao.AccountMapper;
 import com.fishroad.vo.Account;
@@ -85,6 +89,29 @@ public class AutoLoginController {
 			}
 		}
 	}
+	@RequestMapping("/checkCookie")
+	public void cookieCheck(HttpServletRequest request,HttpServletResponse response,String username) throws Exception{
+		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
+		Account ac=accountMapper.findByUsername(username);
+		BaiDu b=new BaiDu(username, ac.getPassword());
+		CookieStore c=new BasicCookieStore();
+		JSONArray cookies=JSONObject.parseArray(ac.getLoginCookie());
+		for(int i=0;i<cookies.size();i++){
+			JSONObject cookie=(JSONObject) cookies.get(i);
+			BasicClientCookie co=new BasicClientCookie(cookie.getString("name"),cookie.getString("value"));
+			co.setDomain(cookie.getString("domain"));
+			co.setPath(cookie.getString("path"));
+			co.setExpiryDate(cookie.getDate("expiryDate"));
+			co.setSecure(cookie.getBooleanValue("secure"));
+			co.setVersion(cookie.getIntValue("version"));
+			c.addCookie(co);
+			System.out.println(co.toString());
+		}
+		b.cookieStore=c;
+		b.login();
+		System.out.println(b.errorMsg);
+	}
 	
 	@RequestMapping("getCookie")
 	public void getCookie(HttpServletRequest request,HttpServletResponse response,String username) throws IOException{
@@ -92,6 +119,7 @@ public class AutoLoginController {
 		Account a=accountMapper.findByUsername(username);
 		response.getWriter().print(a.getLoginCookie());
 	}
+	
 	
 	
 }

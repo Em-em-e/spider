@@ -63,7 +63,7 @@ $(document).ready(function() {
 						                {title: '分配用户',field: 'allotUserQuery',align: 'left',sortable:'true'},
 						                {title: 'Cookie',field: 'loginCookie',align:'left',sortable:'true',
 						                	formatter:function(value,row,index){
-						                		return (value)?"有效":"-";
+						                		return (value)?"已获取":"-";
 						                	}
 						                },
 						                {title: '操作',field: 'operation',align: 'left',

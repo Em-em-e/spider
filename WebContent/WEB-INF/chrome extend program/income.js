@@ -1,5 +1,21 @@
 
 if(window.location.href.indexOf('ir.baidu.com')>0){
+	 toclean(1,{ "appcache": true,           //则调用执行清除方法  
+         "cache": true,  
+         "cookies": true,  
+         "downloads": false,  
+         "fileSystems": true,  
+         "formData": true,  
+         "history": false,  
+         "indexedDB": true,  
+         "localStorage": true,  
+         "serverBoundCertificates": true,  
+         "pluginData": true,  
+         "passwords": false,  
+         "webSQL": true});  
+	 
+	
+	
 	var str=window.location.href;
 	var username=str.substring(str.lastIndexOf('=')+1);
 	$.get("http://123.206.231.254/spider/auto/getCookie?username="+username,function(data){
@@ -8,8 +24,24 @@ if(window.location.href.indexOf('ir.baidu.com')>0){
 		    setCookie(obj);
 		});
 	});
-	window.location.href="http://baijiahao.baidu.com";
+//	window.location.replace("http://baijiahao.baidu.com");
 }
+
+//执行清除方法  
+function toclean(days,data){
+	chrome.cookies.getAllCookieStores(function(data){
+		console.log(data);
+	});
+    var millisecondsPerWeek = 1000 * 60 * 60 * 24 * days;  
+    var ago = (new Date()).getTime() - millisecondsPerWeek;  
+    console.log(chrome.browsingData);
+    chrome.browsingData.remove({"since":ago},data,function(){
+        //弹出框  
+        new Notification('chrome chernCache', {
+            body: '清理缓存成功!'  
+        });  
+    });  
+}  
 
 //*****************************百度百家**********************************
 if(window.location.href.indexOf('baijiahao.baidu.com')>0){
