@@ -63,6 +63,26 @@ public class BaiDu {
             this.errorMsg="初始化失败！";
             e.printStackTrace();
         }
+    }public BaiDu(String username,String password,CookieStore c) {
+        try {
+        	context.put("username", username);
+            context.put("pass", password);
+            this.cookieStore = c;
+            List<Header> headers = new ArrayList<Header>();
+            headers.add(new BasicHeader("user-agent",
+                    "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36"));
+            client = HttpClients.custom().setDefaultCookieStore(cookieStore)
+                    .setDefaultHeaders(headers).build();
+            get = new HttpGet();
+            res = null;
+            get.setURI(new URI("http://pan.baidu.com/"));
+            client.execute(get);
+            getToken();
+            Encrypt();
+        } catch (Exception e) {
+            this.errorMsg="初始化失败！";
+            e.printStackTrace();
+        }
     }
     
     
@@ -83,9 +103,10 @@ public class BaiDu {
         	errorMsg="该账号未绑定邮箱，请先绑定邮箱";
         	break;
         case 0:
-        	errorMsg="登录成功";
+        	errorMsg="获取cookie成功";
             break;
         default:
+        	errorMsg="登录失败，请再试一次";
             break;
         }
     }
@@ -161,6 +182,20 @@ public class BaiDu {
         errorhandle();
     }
     
+    public boolean checkCookie() throws Exception{
+    	get.setURI(new URI("http://baijiahao.baidu.com/"));
+		res = client.execute(get);
+		String respCont=EntityUtils.toString(res.getEntity());
+		
+		String title=respCont.substring(respCont.indexOf("<title>"),respCont.indexOf("</title>"));
+		System.out.println(title);
+		if(title.indexOf("我的首页-百家号")>0){
+			return true;
+		}else{
+			System.out.println(title);
+			return false;
+		}
+    }
     public void checkEmailCode(String vcode) throws Exception{
     	get.setURI(new URI("https://passport.baidu.com/v2/sapi/authwidgetverify?authtoken="+context.get("authtoken")
 		+ "&type=email&jsonp=1&apiver=v3&action=check&vcode="+vcode));

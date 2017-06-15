@@ -19,7 +19,7 @@ public class Account {
 
     private Date lastLoginTime;
 
-    private String remark1;
+    private byte[] remark1;
 
     private String remark2;
     
@@ -99,12 +99,12 @@ public class Account {
         this.lastLoginTime = lastLoginTime;
     }
 
-    public String getRemark1() {
+    public byte[] getRemark1() {
         return remark1;
     }
 
-    public void setRemark1(String remark1) {
-        this.remark1 = remark1 == null ? null : remark1.trim();
+    public void setRemark1(byte[] remark1) {
+        this.remark1 = remark1 == null ? null : remark1;
     }
 
     public String getRemark2() {

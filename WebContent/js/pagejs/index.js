@@ -69,8 +69,12 @@ $(document).ready(function() {
 						                {title: '操作',field: 'operation',align: 'left',
 						                	formatter:function(value,row,index){
 						                		var str="";
-						                		str="<a href='http://ir.baidu.com/phoenix.zhtml?c=188488&p=irol-irhome&username="
-						                			+row.username+"' target='_blank'>一键登录</a>&nbsp;&nbsp;&nbsp;";
+						                		if(row.loginCookie){
+						                			str="<a href='http://ir.baidu.com/phoenix.zhtml?c=188488&p=irol-irhome&username="
+						                				+row.username+"' target='_blank'>一键登录</a>&nbsp;&nbsp;&nbsp;";
+						                		}else{
+						                			str="请先获取cookie";
+						                		}
 						                		return str;
 						                	},sortable:'true'},
 //						                {title: '最后登录时间',field: 'lastLoginTime',align: 'left',
@@ -148,7 +152,8 @@ function doLogin(){
 				$("#nameemail").val(sel[0].username);
 				$("#emailUsername").text(sel[0].username);
 				$("#emialPassoord").text(sel[0].emailPassword);
-				
+				$("#mailUrl").attr("href","https://www.baidu.com/s?wd=163邮箱登陆&username="
+						+sel[0].username.substring(0,sel[0].username.indexOf('@'))+"&emailpa="+sel[0].emailPassword);
 				$("#myModal").modal("hide");
 				$("#emailCheck").modal("show");
 			}

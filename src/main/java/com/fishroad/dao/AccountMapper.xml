@@ -10,7 +10,7 @@
     <result column="allot_user" property="allotUser" jdbcType="INTEGER" />
     <result column="login_cookie" property="loginCookie" jdbcType="VARCHAR" />
     <result column="last_login_time" property="lastLoginTime" jdbcType="TIMESTAMP" />
-    <result column="remark1" property="remark1" jdbcType="VARCHAR" />
+    <result column="remark1" property="remark1" jdbcType="BINARY" />
     <result column="remark2" property="remark2" jdbcType="VARCHAR" />
     <result column="allot_user_query" property="allotUserQuery" jdbcType="VARCHAR"/>
   </resultMap>
@@ -94,7 +94,7 @@
       remark2)
     values (#{id,jdbcType=INTEGER}, #{platform,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, 
       #{password,jdbcType=VARCHAR}, #{emailPassword,jdbcType=VARCHAR}, #{allotUser,jdbcType=INTEGER}, 
-      #{loginCookie,jdbcType=VARCHAR}, #{lastLoginTime,jdbcType=TIMESTAMP}, #{remark1,jdbcType=VARCHAR}, 
+      #{loginCookie,jdbcType=VARCHAR}, #{lastLoginTime,jdbcType=TIMESTAMP}, #{remark1,jdbcType=BINARY}, 
       #{remark2,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.fishroad.vo.Account" >
@@ -157,7 +157,7 @@
         #{lastLoginTime,jdbcType=TIMESTAMP},
       </if>
       <if test="remark1 != null" >
-        #{remark1,jdbcType=VARCHAR},
+        #{remark1,jdbcType=BINARY},
       </if>
       <if test="remark2 != null" >
         #{remark2,jdbcType=VARCHAR},
@@ -189,7 +189,7 @@
         last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
       </if>
       <if test="remark1 != null" >
-        remark1 = #{remark1,jdbcType=VARCHAR},
+        remark1 = #{remark1,jdbcType=BINARY},
       </if>
       <if test="remark2 != null" >
         remark2 = #{remark2,jdbcType=VARCHAR},
@@ -206,7 +206,7 @@
       allot_user = #{allotUser,jdbcType=INTEGER},
       login_cookie = #{loginCookie,jdbcType=VARCHAR},
       last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
-      remark1 = #{remark1,jdbcType=VARCHAR},
+      remark1 = #{remark1,jdbcType=BINARY},
       remark2 = #{remark2,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>

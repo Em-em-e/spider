@@ -6,14 +6,10 @@ import java.io.OutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.client.CookieStore;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.cookie.BasicClientCookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fishroad.dao.AccountMapper;
 import com.fishroad.vo.Account;
@@ -29,7 +25,8 @@ public class AutoLoginController {
 	public void getCode(HttpServletRequest request,HttpServletResponse response,String username) throws Exception{
 		response.setCharacterEncoding("UTF-8");
 		Account ac=accountMapper.findByUsername(username);
-		BaiDu b=(BaiDu) request.getSession().getAttribute("login-"+username);
+//		BaiDu b=(BaiDu) ProtostuffUtil.deserializeProtoStuffDataListToProductsObject(ac.getRemark1(), BaiDu.class);
+		BaiDu b=(BaiDu) request.getServletContext().getAttribute("login-"+username);
 		if(b==null){
 			b=new BaiDu(ac.getUsername(), ac.getPassword());
 			b.login();
@@ -37,7 +34,9 @@ public class AutoLoginController {
 		
 		OutputStream os=response.getOutputStream();
 		b.getCode(os);
-		request.getSession().setAttribute("login-"+username, b);
+//		ac.setRemark1(ProtostuffUtil.serializeProtoStuffObject(b, b.getClass()));
+		request.getServletContext().setAttribute("login-"+username, b);
+		accountMapper.updateByPrimaryKey(ac);
 		response.getOutputStream().flush();
 	}
 	
@@ -47,25 +46,21 @@ public class AutoLoginController {
 		request.setCharacterEncoding("UTF-8");
 		Account ac=accountMapper.findByUsername(username);
 		if(ac!=null){
-			BaiDu b=(BaiDu) request.getSession().getAttribute("login-"+username);
+//			BaiDu b=(BaiDu) ProtostuffUtil.deserializeProtoStuffDataListToProductsObject(ac.getRemark1(), BaiDu.class);
+			BaiDu b=(BaiDu) request.getServletContext().getAttribute("login-"+username);
 			if(b!=null){
 				b.volidate(verifycode);//验证码校验
 				
 				System.out.println(b.errorMsg);
 				String cookies=JSONObject.toJSON(b.cookieStore.getCookies()).toString();
-				if("需要邮箱验证".equals(b.errorMsg)){
-					response.getWriter().print(b.errorMsg);
-				}
-				if("登录成功".equals(b.errorMsg)){
+				if("获取cookie成功".equals(b.errorMsg)){
 					ac.setLoginCookie(cookies);
+//					ac.setRemark1(ProtostuffUtil.serializeProtoStuffObject(b, b.getClass()));
+					request.getServletContext().setAttribute("login-"+username, b);
 					accountMapper.updateByPrimaryKey(ac);
-					response.setContentType("text/html;charset=utf-8");
-					response.getWriter().print("获取cookie成功");
 				}
-				if("该账号未绑定邮箱，请先绑定邮箱".equals(b.errorMsg)){
-					response.setContentType("text/html;charset=utf-8");
-					response.getWriter().print(b.errorMsg);
-				}
+				response.setContentType("text/html;charset=utf-8");
+				response.getWriter().print(b.errorMsg);
 			}
 		}
 	}
@@ -76,12 +71,15 @@ public class AutoLoginController {
 		request.setCharacterEncoding("UTF-8");
 		Account ac=accountMapper.findByUsername(username);
 		if(ac!=null){
-			BaiDu b=(BaiDu) request.getSession().getAttribute("login-"+username);
+//			BaiDu b=(BaiDu)ProtostuffUtil.deserializeProtoStuffDataListToProductsObject(ac.getRemark1(), BaiDu.class);
+			BaiDu b=(BaiDu) request.getServletContext().getAttribute("login-"+username);
 			if(b!=null){
 				b.checkEmailCode(emailCode);
 				if("邮箱验证成功".equals(b.errorMsg)){
 					String cookies=JSONObject.toJSON(b.cookieStore.getCookies()).toString();
 					ac.setLoginCookie(cookies);
+//					ac.setRemark1(ProtostuffUtil.serializeProtoStuffObject(b, b.getClass()));
+					request.getServletContext().setAttribute("login-"+username, b);
 					accountMapper.updateByPrimaryKey(ac);
 					response.setContentType("text/html;charset=utf-8");
 					response.getWriter().print("获取cookie成功");
@@ -93,24 +91,30 @@ public class AutoLoginController {
 	public void cookieCheck(HttpServletRequest request,HttpServletResponse response,String username) throws Exception{
 		response.setCharacterEncoding("UTF-8");
 		request.setCharacterEncoding("UTF-8");
-		Account ac=accountMapper.findByUsername(username);
-		BaiDu b=new BaiDu(username, ac.getPassword());
-		CookieStore c=new BasicCookieStore();
-		JSONArray cookies=JSONObject.parseArray(ac.getLoginCookie());
-		for(int i=0;i<cookies.size();i++){
-			JSONObject cookie=(JSONObject) cookies.get(i);
-			BasicClientCookie co=new BasicClientCookie(cookie.getString("name"),cookie.getString("value"));
-			co.setDomain(cookie.getString("domain"));
-			co.setPath(cookie.getString("path"));
-			co.setExpiryDate(cookie.getDate("expiryDate"));
-			co.setSecure(cookie.getBooleanValue("secure"));
-			co.setVersion(cookie.getIntValue("version"));
-			c.addCookie(co);
-			System.out.println(co.toString());
+//		CookieStore c=new BasicCookieStore();
+//		JSONArray cookies=JSONObject.parseArray(ac.getLoginCookie());
+//		for(int i=0;i<cookies.size();i++){
+//			JSONObject cookie=(JSONObject) cookies.get(i);
+//			if(!"BAIDUID".equals(cookie.getString("name"))){
+//				BasicClientCookie co=new BasicClientCookie(cookie.getString("name"),cookie.getString("value"));
+//				co.setDomain(cookie.getString("domain"));
+//				co.setPath(cookie.getString("path"));
+//				co.setExpiryDate(cookie.getDate("expiryDate"));
+//				co.setSecure(cookie.getBooleanValue("secure"));
+//				co.setVersion(cookie.getIntValue("version"));
+//				c.addCookie(co);
+//				System.out.println(co.toString());
+//			}
+//		}
+//		BaiDu b=(BaiDu)ProtostuffUtil.deserializeProtoStuffDataListToProductsObject(ac.getRemark1(), BaiDu.class);
+//		BaiDu b=new BaiDu(username,ac.getPassword(),c);
+		BaiDu b=(BaiDu) request.getServletContext().getAttribute("login-"+username);
+		if(b!=null)
+		if(b.checkCookie()){
+			response.getWriter().print("1");
+		}else{
+			response.getWriter().print("0");
 		}
-		b.cookieStore=c;
-		b.login();
-		System.out.println(b.errorMsg);
 	}
 	
 	@RequestMapping("getCookie")

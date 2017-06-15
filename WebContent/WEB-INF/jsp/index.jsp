@@ -154,6 +154,9 @@
 				                <h4 class="modal-title" id="myModalLabel">邮箱验证码验证</h4>
 				            </div>
 				            <div class="modal-body">
+					            <div class="form-group">
+					            <h6>邮件验证码已发送，请登录邮箱查看</h6><a id="mailUrl" href="" target="_blank">点击跳转</a>
+					            </div>
 							    <div class="form-group">
 							    邮箱：<span id="emailUsername"></span> &nbsp;&nbsp;邮箱密码：<span id="emialPassoord"></span>
 							        <input id="nameemail" name="username" type="hidden"/>
