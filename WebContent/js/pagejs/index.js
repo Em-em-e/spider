@@ -25,6 +25,19 @@ $(document).ready(function() {
 		// 1.初始化Table
 		var oTable = new TableInit();
 		oTable.Init();
+		
+		$("#verifycode").bind('keydown',function(event){  
+		  if(event.keyCode == "13")      
+		  {  
+			  doLogin();
+		  }  
+		});
+		$("#emailCode").bind('keydown',function(event){  
+		  if(event.keyCode == "13")      
+		  {  
+			  doLoginEmail();
+		  }  
+		});
 
 		var interval;
 		$("div[aria-controls]").click(function(){
@@ -53,7 +66,7 @@ $(document).ready(function() {
 					}});
 				}
 				if($(this).attr('aria-controls')=='regu'){
-
+					
 				}
 			}
 		});
@@ -97,8 +110,9 @@ function login(){
 //		if(sel[0].loginCookie!=undefined && sel[0].loginCookie!=""){
 //			alert("当前cookie有效，可以直接登录");
 //		}else{
+			$("#verifycode").val("");
 			$("#name").val(sel[0].username);
-			$("#codeImage").attr("src","auto/getCode?username="+sel[0].username);
+			$("#codeImage").attr("src","auto/getCode?username="+sel[0].username+"&aa="+new Date());
 			$('#myModal').modal("show");
 //		}
 	}else{
@@ -151,7 +165,7 @@ function doLoginEmail(){
 		success:function(data){
 			alert(data);
 			if(data=="获取cookie成功"){
-				$("#myModal").modal("hide");
+				$("#emailCheck").modal("hide");
 				$("#accountTable").bootstrapTable("refresh");
 			}
 		}

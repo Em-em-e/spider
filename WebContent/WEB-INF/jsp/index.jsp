@@ -94,21 +94,20 @@
             <div role="tabpanel" class="tab-pane  active" id="regu">
             	<br>
                 <div class="check-div form-inline">
-                    <div class="col-xs-3">
-                        	分配用户：<input type="text" id="platform" name="platform" class="form-control input-sm" placeholder="分配用户">
+                    <div class="col-xs-4">
+                                                                         分配用户：<input type="text" id="platform" name="platform" class="form-control input-sm" placeholder="分配用户">
                     </div>
                     <div class="col-xs-4">
                    		 用户名：<input type="text" id="username" name="username" class="form-control input-sm" placeholder="平台账号用户名">
                     </div>
-                    <div class="col-xs-5">
+                    <div class="col-xs-4">
                         	发文完成：<select id="remark2" name="remark2">
                         		<option value="">请选择</option>
                         		<option value="ok">完成</option>
                         		<option value="-">-</option>
                         	</select>
-                        	
                         	<!-- <input type="text" id="allotUser" name="allotUser" class="form-control input-sm" placeholder="分配的系统用户名或用户姓名"> -->
-                        &nbsp;&nbsp;&nbsp;<button class="btn btn-white btn-xs " onclick="doSearchAccount()">查 询 </button>
+                        &nbsp;<button class="btn btn-white btn-xs " onclick="doSearchAccount()">查 询 </button>
                         <button class="btn btn-white btn-xs " onclick="doClear()">清除 </button>
                     </div>
                 </div>
@@ -141,6 +140,7 @@
 							        <input id="name" name="username" type="hidden"/>
 							    </div>
 							    <div class="form-group">
+							    <label>输入完成后按Enter自动提交</label><br>
 							        验证码：<input id="verifycode" name="verifycode" type="text"/>
 							        <!--这里img标签的src属性的值为后台实现图片验证码方法的请求地址-->
 							        <label><img type="image" src="" id="codeImage" onclick="chageCode()" title="图片看不清？点击重新获取验证码" style="cursor:pointer;"/></label>

@@ -45,3 +45,4 @@ create table sys_user(
     primary key (id)
 )engine=innodb default charset=utf8;
 
+update account set login_cookie='';

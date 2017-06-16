@@ -62,8 +62,14 @@
             <if test="ac.username != null">  
                 and a.username LIKE CONCAT('%', CONCAT(#{ac.username}, '%'))
             </if>  
-			<if test="ac.allotUser != null">  
-                and (u.name LIKE CONCAT('%', CONCAT(#{ac.allotUser}, '%')) or u.username LIKE CONCAT('%', CONCAT(#{ac.allotUser}, '%')) )
+			<if test="ac.allotUserQuery != null and ac.allotUserQuery!=''">  
+                and (u.name LIKE CONCAT('%', CONCAT(#{ac.allotUserQuery}, '%')) or u.username LIKE CONCAT('%', CONCAT(#{ac.allotUserQuery}, '%')) ) 
+            </if>
+            <if test="ac.remark2 == 'ok'.toString()">  
+                and a.remark2='ok' 
+            </if>
+            <if test="ac.remark2 == '-'.toString()">  
+                and (a.remark2 is null or a.remark2!='ok') 
             </if>
             <if test="ac.lastLoginTime != null">  
                 and last_login_time LIKE CONCAT('%', CONCAT(#{ac.lastLoginTime}, '%'))

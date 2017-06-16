@@ -2,7 +2,6 @@ package com.fishroad.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +18,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.fishroad.dao.AccountMapper;
 import com.fishroad.util.ExcelUtil;
 import com.fishroad.vo.Account;
-import com.fishroad.vo.News;
 
 @Controller
 public class AccountController {
@@ -51,6 +49,13 @@ public class AccountController {
 			String sort,String order) throws IOException{
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
+		
+		if(ac!=null && ac.getPlatform()!=null && !"".equals(ac.getPlatform())){
+			byte[] ti=ac.getPlatform().getBytes("ISO8859-1");
+			String pl=new String(ti, "UTF-8");
+			ac.setPlatform(pl);
+		}
+		
 		List<Account> li=accountMapper.queryPage(limit, offset, sort,order, ac);
 		
 		int total=accountMapper.count(ac);
