@@ -21,7 +21,7 @@ public class AutoLoginController {
 	@Autowired
 	private AccountMapper accountMapper;
 	
-	@RequestMapping("getCode")
+	@RequestMapping("/getCode")
 	public void getCode(HttpServletRequest request,HttpServletResponse response,String username) throws Exception{
 		response.setCharacterEncoding("UTF-8");
 		Account ac=accountMapper.findByUsername(username);

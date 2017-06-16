@@ -23,7 +23,7 @@
   </select>
   <select id="queryPage" resultMap="BaseResultMap">  
         select a.platform,a.username,a.password,a.email_password,CONCAT(u.username, CONCAT(',',u.name)) allot_user_query,
-        	a.last_login_time,a.login_cookie   
+        	a.last_login_time,a.login_cookie,a.remark2   
         from account a LEFT JOIN sys_user u on a.allot_user=u.id   
         <where>  
         	1=1
@@ -34,7 +34,13 @@
                 and a.username LIKE CONCAT('%', CONCAT(#{ac.username}, '%'))
             </if>  
 			<if test="ac.allotUserQuery != null and ac.allotUserQuery!=''">  
-                and (u.name LIKE CONCAT('%', CONCAT(#{ac.allotUserQuery}, '%')) or u.username LIKE CONCAT('%', CONCAT(#{ac.allotUserQuery}, '%')) )
+                and (u.name LIKE CONCAT('%', CONCAT(#{ac.allotUserQuery}, '%')) or u.username LIKE CONCAT('%', CONCAT(#{ac.allotUserQuery}, '%')) ) 
+            </if>
+            <if test="ac.remark2 == 'ok'.toString()">  
+                and a.remark2='ok' 
+            </if>
+            <if test="ac.remark2 == '-'.toString()">  
+                and (a.remark2 is null or a.remark2!='ok') 
             </if>
             <if test="ac.lastLoginTime != null">  
                 and last_login_time LIKE CONCAT('%', CONCAT(#{ac.lastLoginTime}, '%'))

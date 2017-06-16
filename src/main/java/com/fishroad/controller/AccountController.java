@@ -2,6 +2,7 @@ package com.fishroad.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,8 +29,10 @@ public class AccountController {
 	
 	
 	@RequestMapping(value = "/imports")  
-    public void imports(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request, ModelMap model) throws IOException {  
+    public void imports(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request,HttpServletResponse response, ModelMap model) throws IOException {  
   
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html");
         System.out.println("开始");  
         String path = request.getSession().getServletContext().getRealPath("upload");  
         String fileName = file.getOriginalFilename();  
@@ -39,6 +42,7 @@ public class AccountController {
         List<Object> accounts=new ExcelUtil().importDataFromExcel(new Account(), is, fileName);
         System.out.println(accounts.size());
         accountMapper.insertList(accounts);
+        response.getWriter().print("<script>alert('导入成功！');history.go(-1);</script>");
         
     }
 	
@@ -54,6 +58,20 @@ public class AccountController {
 		Object o=JSONObject.toJSON(li);
 		
 		response.getWriter().print("{\"total\":" + total +",\"page\":"+page+ ",\"rows\":"+o.toString()+"}");
+	}
+	
+	@RequestMapping("/sendFinish")
+	public void sendFinish(HttpServletRequest request,HttpServletResponse response,String username) throws Exception{
+		request.setCharacterEncoding("UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		Account ac=accountMapper.findByUsername(username);
+		if("ok".equals(ac.getRemark2())){
+			ac.setRemark2("");
+		}else{
+			ac.setRemark2("ok");
+		}
+		accountMapper.updateByPrimaryKeySelective(ac);
+		response.getWriter().print("ok");
 	}
 
 }

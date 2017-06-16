@@ -37,16 +37,16 @@
                         <a href="loginout">退出登录</a>
                     </p>
                 </div>
-                <div class="meun-title">数据管理</div>
+                <%-- <div class="meun-title">数据管理</div>
                 <div class="meun-item meun-item-active" href="#user" aria-controls="user" role="tab" data-toggle="tab"><img src="${pageContext.request.contextPath}/images/icon_user_grey.png">所有文章</div>
-                <div class="meun-item" href="#chan" aria-controls="chan" role="tab" data-toggle="tab"><img src="${pageContext.request.contextPath}/images/icon_change_grey.png">爬虫管理</div>
+                <div class="meun-item" href="#chan" aria-controls="chan" role="tab" data-toggle="tab"><img src="${pageContext.request.contextPath}/images/icon_change_grey.png">爬虫管理</div> --%>
                 <div class="meun-title">用户管理</div>
                 <div class="meun-item" href="#scho" aria-controls="scho" role="tab" data-toggle="tab"><img src="${pageContext.request.contextPath}/images/icon_house_grey.png">用户管理</div>
-                <div class="meun-item" href="#regu" aria-controls="regu" role="tab" data-toggle="tab"><img src="${pageContext.request.contextPath}/images/icon_rule_grey.png">账号管理</div>
+                <div class="meun-item meun-item-active" href="#regu" aria-controls="regu" role="tab" data-toggle="tab"><img src="${pageContext.request.contextPath}/images/icon_rule_grey.png">账号管理</div>
                 <div class="meun-item" href="#stud" aria-controls="stud" role="tab" data-toggle="tab"><img src="${pageContext.request.contextPath}/images/icon_card_grey.png">修改密码</div>
                 <div class="meun-item" href="#import" aria-controls="import" role="tab" data-toggle="tab"><img src="${pageContext.request.contextPath}/images/icon_char_grey.png">批量导入</div>
-                <div class="meun-title">收益管理</div>
-                <div class="meun-item" href="#rate" aria-controls="rate" role="tab" data-toggle="tab"><img src="${pageContext.request.contextPath}/images/icon_house_grey.png">收益比例</div>
+                <%-- <div class="meun-title">收益管理</div>
+                <div class="meun-item" href="#rate" aria-controls="rate" role="tab" data-toggle="tab"><img src="${pageContext.request.contextPath}/images/icon_house_grey.png">收益比例</div> --%>
                 
             </div>
             <!-- 右侧具体内容栏目 -->
@@ -58,12 +58,12 @@
                 <div class="tab-content">
 <!-- 用户管理 -->
             <div role="tabpanel" class="tab-pane" id="scho">
-                <div class="check-div form-inline">
+                <div class="check-div">
                     <div class="col-xs-3">
-                        	平台：<input type="text" id="platform" name="platform" class="form-control input-sm" placeholder="平台代码">
+                        	平台：<input type="text" id="" name="platform" class="form-control input-sm" placeholder="平台代码">
                     </div>
                     <div class="col-xs-4">
-                   		 用户名：<input type="text" id="username" name="username" class="form-control input-sm" placeholder="平台账号用户名">
+                   		 用户名：<input type="text" id="" name="username" class="form-control input-sm" placeholder="平台账号用户名">
                     </div>
                     <div class="col-xs-5">
                         	分配用户：<input type="text" id="allotUser" name="allotUser" class="form-control input-sm" placeholder="分配的系统用户名或用户姓名">
@@ -74,7 +74,7 @@
                 <div class="data-div">
                     <div class="row tableHeader">
 						<div class="pull-right" style="right:50px;position:absolute;margin-top:0px">
-							<button class="btn btn-primary" style="height: 30px" onclick="login()">获取cookie</button>
+							<button class="btn btn-primary" style="height: 30px" onclick="login()">获取验证码</button>
 						</div>
                     </div>
 					<div class="container-fluid">
@@ -91,24 +91,32 @@
                 
                 
 <!-- 账号管理 -->
-            <div role="tabpanel" class="tab-pane" id="regu">
+            <div role="tabpanel" class="tab-pane  active" id="regu">
+            	<br>
                 <div class="check-div form-inline">
                     <div class="col-xs-3">
-                        	平台：<input type="text" id="platform" name="platform" class="form-control input-sm" placeholder="平台代码">
+                        	分配用户：<input type="text" id="platform" name="platform" class="form-control input-sm" placeholder="分配用户">
                     </div>
                     <div class="col-xs-4">
                    		 用户名：<input type="text" id="username" name="username" class="form-control input-sm" placeholder="平台账号用户名">
                     </div>
                     <div class="col-xs-5">
-                        	分配用户：<input type="text" id="allotUser" name="allotUser" class="form-control input-sm" placeholder="分配的系统用户名或用户姓名">
+                        	发文完成：<select id="remark2" name="remark2">
+                        		<option value="">请选择</option>
+                        		<option value="ok">完成</option>
+                        		<option value="-">-</option>
+                        	</select>
+                        	
+                        	<!-- <input type="text" id="allotUser" name="allotUser" class="form-control input-sm" placeholder="分配的系统用户名或用户姓名"> -->
                         &nbsp;&nbsp;&nbsp;<button class="btn btn-white btn-xs " onclick="doSearchAccount()">查 询 </button>
                         <button class="btn btn-white btn-xs " onclick="doClear()">清除 </button>
                     </div>
                 </div>
                 <div class="data-div">
                     <div class="row tableHeader">
-						<div class="pull-right" style="right:300px;position:absolute;margin-top:0px">
-							<button class="btn btn-primary" style="height: 30px" onclick="login()">获取cookie</button>
+						<div class="pull-right" style="right:50px;position:absolute;margin-top:0px">
+							<button class="btn btn-primary" style="height: 30px" onclick="login()">获取验证码</button>&nbsp;&nbsp;&nbsp;
+							<button class="btn btn-primary" style="height: 30px" onclick="sendFinish()">发文完成</button>
 						</div>
                     </div>
 					<div class="container-fluid">
@@ -194,7 +202,7 @@
             </div>
                     
 <!--所有文章模块-->
-            <div role="tabpanel" class="tab-pane active" id="user">
+            <div role="tabpanel" class="tab-pane" id="user">
                 <div class="check-div form-inline">
                     <div class="col-xs-3">
                         	标题：<input type="text" id="title" name="title" class="form-control input-sm" placeholder="搜索标题">
